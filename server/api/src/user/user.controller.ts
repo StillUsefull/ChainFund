@@ -1,9 +1,10 @@
-import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, ParseIntPipe, ParseUUIDPipe, Post, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, ParseIntPipe, ParseUUIDPipe, Post, Put, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
 import { GetUserDto } from './dto/GetUser.dto';
 import {Roles, UserDecorator} from '@common/decorators/index'
 import { JwtPayload } from '@auth/interfaces/JwtPayload';
 import { Role } from '@prisma/client';
+import { UpdateUserDto } from './dto/UpdateUser.dto';
 
 
 
@@ -28,7 +29,13 @@ export class UserController {
     @UseInterceptors(GetUserDto)
     @Delete("/delete/:id")
     async deleteUser(@Param('id', ParseUUIDPipe) id: string, @UserDecorator() user: JwtPayload){
-        return await this.userService.delete(id, user)
+        return this.userService.delete(id, user)
+    }
+
+    @UseInterceptors(GetUserDto)
+    @Put("/update/:id")
+    async updateUser(@Param('id', ParseUUIDPipe) id: string, @UserDecorator() user: JwtPayload, @Body() dto: UpdateUserDto){
+        return this.userService.update(id, user, dto) 
     }
 }
 

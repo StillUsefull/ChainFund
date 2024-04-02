@@ -41,6 +41,18 @@
       ],
       "@common/*": [
         "libs/common/src/*"
+      ],
+      "@cash-collection/": [
+        "src/cash-collection"
+      ],
+      "@cash-collection/*": [
+        "src/cash-collection/*"
+      ],
+      "@transaction/": [
+        "src/transaction"
+      ],
+      "@transaction/*": [
+        "src/transaction/*"
       ]
     }
   }

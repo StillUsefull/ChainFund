@@ -6,6 +6,7 @@ import { JwtPayload } from '@auth/interfaces/JwtPayload';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { ConfigService } from '@nestjs/config';
 import { convertTimeToSeconds } from '@common/utils';
+import { UpdateUserDto } from './dto/UpdateUser.dto';
 @Injectable()
 export class UserService {
     constructor(private readonly databaseService: DatabaseService,
@@ -49,7 +50,19 @@ export class UserService {
         return user
     }
 
-    update(){}
+    update(id,  user, dto: Partial<UpdateUserDto>){
+        if (id !== user.id && user.role !== Role.SUPER){
+            throw new ForbiddenException()
+        }
+        return this.databaseService.user.update({
+            where: {
+                id: user.id
+            }, 
+            data: {
+                ...dto
+            }
+        })
+    }
 
     async delete(id: string, user: JwtPayload){
         if (id !== user.id && user.role !== Role.SUPER){

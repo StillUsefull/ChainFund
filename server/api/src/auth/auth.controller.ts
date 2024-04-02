@@ -1,5 +1,5 @@
-import { BadRequestException, Body, ClassSerializerInterceptor, Controller, Get, HttpStatus, Post, Req, Res, UnauthorizedException, UseInterceptors } from '@nestjs/common';
-import {Response} from 'express'
+import { BadRequestException, Body, ClassSerializerInterceptor, Controller, Get, HttpStatus, Post, Req, Res, UnauthorizedException, UseGuards, UseInterceptors } from '@nestjs/common';
+import {Request, Response} from 'express'
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/RegisterUser.dto';
 import { LoginUserDto } from './dto/LoginUser.dto';
@@ -9,6 +9,7 @@ import { Cookie } from '@common/decorators/cookies.decorator';
 import { UserAgent } from '@common/decorators/userAgent.decorator';
 import { Public } from '@common/decorators/public.decorator';
 import { GetUserDto } from '@user/dto/GetUser.dto';
+import { GoogleGuard } from './guards/google.guard';
 
 @Public()
 @Controller('auth')
@@ -72,5 +73,16 @@ export class AuthController {
         })
         res.cookie('refreshToken', '', {httpOnly: true, secure: true, expires: new Date()})
         res.sendStatus(HttpStatus.OK)
+    }
+
+    @UseGuards(GoogleGuard)
+    @Get('google')
+    googleAuth(){
+    }
+
+    @UseGuards(GoogleGuard)
+    @Get('google/callback')
+    googleAuthCallback(@Req() req: Request){
+        return req.user;
     }
 }

@@ -26,11 +26,12 @@ model User {
   name        String
   telegram    String?
   role        Role     @default(USER)
-  Token       Token[]
+  transaction Transaction[]
+  token       Token[]
   posts       Post[]
   collections CashCollection[] 
   comments    Comment[]
-  createdAt DateTime @default(now())
+  createdAt   DateTime @default(now())
 }
 
 model Token {
@@ -54,16 +55,28 @@ model Post {
 }
 
 model CashCollection {
-  id        String @id @default(uuid())
-  title     String
-  author    User? @relation(fields: [authorId], references: [id])
-  authorId  String? 
-  goal      Float
-  state     Float
-  text      String
-  comments  Comment[] 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String @id @default(uuid())
+  title        String
+  author       User? @relation(fields: [authorId], references: [id])
+  authorId     String? 
+  goal         Float
+  state        Float
+  text         String
+  comments     Comment[] 
+  transactions Transaction[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Transaction {
+  id                String     @id @default(uuid())
+  amount            Float      
+  cashCollection    CashCollection? @relation(fields: [cashCollectionId], references: [id])
+  cashCollectionId  String?  
+  user              User?       @relation(fields: [userId], references: [id])
+  userId            String?   
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
 }
 
 
