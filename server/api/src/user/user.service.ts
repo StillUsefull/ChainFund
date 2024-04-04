@@ -7,11 +7,13 @@ import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { ConfigService } from '@nestjs/config';
 import { convertTimeToSeconds } from '@common/utils';
 import { UpdateUserDto } from './dto/UpdateUser.dto';
+import { PhotoService } from 'src/photo/photo.service';
 @Injectable()
 export class UserService {
     constructor(private readonly databaseService: DatabaseService,
                 @Inject(CACHE_MANAGER) private cacheManager: Cache,
-                private readonly configService: ConfigService
+                private readonly configService: ConfigService,
+                private readonly photoService: PhotoService
     ){}
 
     create(user: Partial<User>){
@@ -50,17 +52,27 @@ export class UserService {
         return user
     }
 
-    update(id,  user, dto: Partial<UpdateUserDto>){
+    async update(id: string,  user: JwtPayload, dto: Partial<UpdateUserDto>, file: Express.Multer.File){
         if (id !== user.id && user.role !== Role.SUPER){
             throw new ForbiddenException()
         }
+        let updateData: any = {
+            ...dto
+        }
+        const userData = await this.databaseService.user.findUnique({where: {id}});
+        if(file){
+            if (userData.photo){
+                await this.photoService.deletePhotoByUrl(userData.photo)
+            }
+            const photoUrl = await this.photoService.uploadFile(file);
+            updateData.photo = photoUrl;
+        }
+        
         return this.databaseService.user.update({
             where: {
                 id: user.id
             }, 
-            data: {
-                ...dto
-            }
+            data: updateData
         })
     }
 

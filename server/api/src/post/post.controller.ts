@@ -1,4 +1,52 @@
-import { Controller } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { PostService } from './post.service';
+import { CreatePostDto } from './dto/CreatePost.dto';
+import { Roles, UserDecorator } from '@common/decorators';
+import { JwtPayload } from '@auth/interfaces/JwtPayload';
+import { UpdatePostDto } from './dto/UpdatePost.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { multerOptions } from '@common/options/multer.option';
+import { RoleGuard } from '@auth/guards/role.guard';
+import { Role } from '@prisma/client';
 
 @Controller('post')
-export class PostController {}
+export class PostController {
+    constructor(private readonly postService: PostService){}
+
+    @Get()
+    getAll(){
+        return this.postService.getAll()
+    }
+
+    @Get('/:id')
+    findOne(@Param('id') id: string){
+        return this.postService.findOne(id);
+    }
+
+    @Post()
+    @UseGuards(RoleGuard)
+    @Roles(Role.ADMIN, Role.SUPER)
+    @UseInterceptors(FileInterceptor('file', multerOptions))
+    create(@Body() dto: CreatePostDto, @UserDecorator() user: JwtPayload, @UploadedFile() file?: Express.Multer.File){
+        return this.postService.create(dto, user, file);
+    }
+
+    @Put('/:id')
+    @UseGuards(RoleGuard)
+    @Roles(Role.ADMIN, Role.SUPER)
+    @UseInterceptors(FileInterceptor('file', multerOptions))
+    update( @Param('id') id: string, 
+            @Body() dto: UpdatePostDto,
+            @UserDecorator() user: JwtPayload, 
+            @UploadedFile() file?: Express.Multer.File
+        ){
+            return this.postService.update(id, dto, user, file)
+    }
+
+    @Delete('/:id')
+    @UseGuards(RoleGuard)
+    @Roles(Role.ADMIN, Role.SUPER)
+    delete(@Param('id') id: string, @UserDecorator() user: JwtPayload){
+        return this.postService.delete(id, user)
+    }
+}

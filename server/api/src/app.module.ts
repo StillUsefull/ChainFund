@@ -6,9 +6,10 @@ import { JwtAuthGuard } from '@auth/guards/jwt.guard';
 import { CashCollectionModule } from './cash-collection/cash-collection.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { PostModule } from './post/post.module';
+import { PhotoModule } from './photo/photo.module';
 
 @Module({
-  imports: [UserModule, AuthModule, AuthModule, ConfigModule.forRoot({isGlobal: true}), CashCollectionModule, TransactionModule, PostModule],
+  imports: [UserModule, AuthModule, AuthModule, ConfigModule.forRoot({isGlobal: true}), CashCollectionModule, TransactionModule, PostModule, PhotoModule],
   controllers: [],
   providers: [
     {

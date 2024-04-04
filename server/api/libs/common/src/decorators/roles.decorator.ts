@@ -3,4 +3,4 @@ import { Role } from "@prisma/client"
 
 
 export const ROLE_KEY = 'role'
-export const Roles = (role: Role) => SetMetadata(ROLE_KEY, role)
+export const Roles = (...roles: Role[]) => SetMetadata(ROLE_KEY, roles);

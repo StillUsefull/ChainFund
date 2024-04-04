@@ -34,7 +34,8 @@ export class UserController {
 
     @UseInterceptors(GetUserDto)
     @Put("/update/:id")
-    async updateUser(@Param('id', ParseUUIDPipe) id: string, @UserDecorator() user: JwtPayload, @Body() dto: UpdateUserDto){
+    @UseInterceptors(FileInterceptor('file', multerOptions))
+    async updateUser(@Param('id', ParseUUIDPipe) id: string, @UserDecorator() user: JwtPayload, @Body() dto: UpdateUserDto, ){
         return this.userService.update(id, user, dto) 
     }
 }
