@@ -24,6 +24,8 @@ export class GetUserDto implements User {
 
     collections: CashCollection[]; 
 
+    photo: string;
+
     @Exclude()
     comments: Comment[];
 
@@ -33,4 +35,5 @@ export class GetUserDto implements User {
     constructor(user: User){
         Object.assign(this, user)
     }
+    
 }

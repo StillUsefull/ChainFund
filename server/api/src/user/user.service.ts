@@ -70,7 +70,7 @@ export class UserService {
         
         return this.databaseService.user.update({
             where: {
-                id: user.id
+                id: id
             }, 
             data: updateData
         })

@@ -6,9 +6,8 @@ import { v4 as uuidv4 } from 'uuid';
 export class PhotoService {
     uploadFile(file: Express.Multer.File) {
         return new Promise<string | UploadApiErrorResponse>((resolve, reject) => {
-            const uniqueFilename = `${uuidv4()}.jpg`
             const uploadStream = cloudinary.uploader.upload_stream(
-                {public_id: uniqueFilename},
+                
               (error, result) => {
                 if (error) return reject(error);
                 resolve(result?.secure_url);
