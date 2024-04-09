@@ -44,6 +44,13 @@ export class UserController {
         return this.userService.update(id, user, dto, file) 
       
     }
+
+    @UseInterceptors(GetUserDto)
+    @Get('/iam')
+    async iam(@UserDecorator() user: JwtPayload){
+        return this.userService.findOne(user.id);
+        
+    }
 }
 
 

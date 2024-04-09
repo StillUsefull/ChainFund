@@ -1,4 +1,4 @@
-import {CashCollection, Post, Role, User, Comment} from '@prisma/client'
+import {CashCollection, Post, Role, User, Comment, Token} from '@prisma/client'
 import { Exclude } from 'class-transformer';
 
 
@@ -14,11 +14,10 @@ export class GetUserDto implements User {
 
     telegram: string;
 
-    @Exclude()
     role: Role;
 
     @Exclude()
-    Token: string;
+    Token: Token[];
 
     posts: Post[];
 
