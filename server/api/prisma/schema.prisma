@@ -19,11 +19,21 @@ enum Role {
   SUPER
 }
 
+enum Category {
+  MILITARY
+  HEALTH
+  DEVELOPMENT
+  TECH
+  ECO
+  ART
+}
+
 model User {
   id          String @id @default(uuid())
   email       String   @unique
   password    String
   name        String
+  semi        String
   telegram    String?
   photo       String?
   role        Role     @default(USER)
@@ -62,11 +72,13 @@ model Post {
 model CashCollection {
   id           String @id @default(uuid())
   title        String
+  photo        String
   author       User? @relation(fields: [authorId], references: [id])
   authorId     String? 
   goal         Float
   state        Float
   text         String
+  category     Category
   comments     Comment[] 
   transactions Transaction[]
   publish   Boolean @default(false)
