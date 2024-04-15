@@ -9,19 +9,19 @@ export function CreatorForm() {
     category: ''
   });
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors]: any = useState({});
 
   const validateForm = () => {
     let valid = true;
-    let newErrors = {};
+    let newErrors: any = {};
 
-    // Проверка имени
+    
     if (!formData.name) {
       valid = false;
       newErrors.name = 'Name is required.';
     }
 
-    // Проверка email
+    
     if (!formData.email) {
       valid = false;
       newErrors.email = 'Email is required.';
@@ -30,13 +30,13 @@ export function CreatorForm() {
       newErrors.email = 'Email is not valid.';
     }
 
-    // Проверка описания
+    
     if (!formData.description) {
       valid = false;
       newErrors.description = 'Description is required.';
     }
 
-    // Проверка категории
+    
     if (!formData.category) {
       valid = false;
       newErrors.category = 'Category is required.';
@@ -51,7 +51,6 @@ export function CreatorForm() {
     if (validateForm()) {
       console.log('Form Data:', formData);
       alert('Application sent!');
-      // Здесь можно отправить данные на сервер
     }
   };
 

@@ -3,11 +3,11 @@ import { Container, Nav, Navbar, NavDropdown, Button } from "react-bootstrap";
 export function Header() {
     return (
         <>
-            <Navbar collapseOnSelect expand='md' style={{background: '#0061FF'}}>
+            <Navbar collapseOnSelect expand='md' style={{background: '#0061FF', height: '160px'}}>
                 <Container fluid>
                     <Navbar.Brand href="/">
                             <img
-                                src="./chainfund-favicon-color.png"
+                                src="https://res.cloudinary.com/dldpvhtjt/image/upload/v1712313763/kl5ohei6cf7esl6yvvib"
                                 height='100'
                                 className="d-inline-block align-top"
                                 alt="Logo"
@@ -43,7 +43,6 @@ export function Header() {
                             </NavDropdown>
                             <Nav.Link href='/creators' style={{color: '#FFF148'}}>Creators</Nav.Link>
                             <Nav.Link href='/blog' style={{color: '#FFF148'}}>Blog</Nav.Link>
-                            <Nav.Link href='/about' style={{color: '#FFF148'}}>About Us</Nav.Link>
                             <Nav.Link href='/help' style={{color: '#FFF148'}}>How to Start a Project</Nav.Link>
                         </Nav>
                         <Nav> 

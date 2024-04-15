@@ -11,6 +11,7 @@ export function CashCollectionCard({ id, title, description, goal, category, pho
     fontFamily: 'cursive',
   }
 
+  
   return (
     <Card className="bg-dark text-white" onClick={handlerCardClick} style={{ width: '40rem', cursor: 'pointer', margin: '15px'}}>
       <Card.Img src={photo} alt="Card image" />

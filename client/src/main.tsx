@@ -1,14 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 
-import './index.css'
+
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { RootPage } from '@routes/root-page';
 import { FundPage } from '@routes/funds-page';
 import { CreatorPage } from '@routes/creators-page';
 import { BlogPage } from '@routes/blog-page';
-import { AboutPage } from '@routes/about-page';
 import { HelpPage } from '@routes/help-page';
 import { ErrorPage } from '@routes/error-page';
 import { Header } from '@components/header';
@@ -28,6 +27,11 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />
   },
   {
+    path: "/funds/:category",
+    element: <FundPage />,
+    errorElement: <ErrorPage />
+  },
+  {
     path: "/creators",
     element: <CreatorPage />,
     errorElement: <ErrorPage />
@@ -35,10 +39,6 @@ const router = createBrowserRouter([
   {
     path: "/blog",
     element: <BlogPage />
-  },
-  {
-    path: "/about",
-    element: <AboutPage />
   },
   {
     path: "/help",

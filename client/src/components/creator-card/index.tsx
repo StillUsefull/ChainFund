@@ -12,7 +12,7 @@ export function CreatorCard({ id, name, semi, photo }) {
 
   return (
     <Card  style={{ width: '18rem', margin: '30px'}}>
-      <Card.Img variant="top" src={photo} />
+      <Card.Img variant="top" src={photo} style={{ height: '250px', width: '100%', objectFit: 'cover' }}/>
       <Card.Body>
         <Card.Title>{name}</Card.Title>
         <Card.Text>
