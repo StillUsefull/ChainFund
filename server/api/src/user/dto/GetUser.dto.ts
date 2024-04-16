@@ -12,6 +12,8 @@ export class GetUserDto implements User {
 
     name: string;
 
+    semi: string;
+    
     telegram: string;
 
     role: Role;

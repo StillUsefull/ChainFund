@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { convertTimeToSeconds } from '@common/utils';
 import { UpdateUserDto } from './dto/UpdateUser.dto';
 import { PhotoService } from 'src/photo/photo.service';
+import { CreateUserDto } from './dto/CreateUser.dto';
 @Injectable()
 export class UserService {
     constructor(private readonly databaseService: DatabaseService,
@@ -16,13 +17,13 @@ export class UserService {
                 private readonly photoService: PhotoService
     ){}
 
-    create(user: Partial<User>){
+    createUser(user: Partial<User>){
         const hashedPassword = this.hashPassword(user.password)
         return this.databaseService.user.create({
             data: {
                 email: user.email,
-                password: hashedPassword,
-                name: user.name
+                name: user.name,
+                password: hashedPassword
             }
         })
     }

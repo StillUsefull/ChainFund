@@ -2,7 +2,7 @@ import { CashCollection, Category } from "@prisma/client";
 import { IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl, MaxLength } from "class-validator";
 
 
-export class CreateCollectionDto {
+export class UpdateCollectionDto {
     @IsNotEmpty()
     @MaxLength(50)
     @IsString()

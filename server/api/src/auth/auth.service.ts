@@ -25,7 +25,7 @@ export class AuthService {
         if (user){
             throw new ConflictException(`Користувач з поштою ${dto.email} вже зареєстрований`)
         }
-        return this.userService.create(dto).catch(err => {
+        return this.userService.createUser(dto).catch(err => {
             this.logger.error(err)
             return null;
         })

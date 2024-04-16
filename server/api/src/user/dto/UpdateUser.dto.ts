@@ -13,11 +13,16 @@ export class UpdateUserDto {
     @IsOptional()
     password?: string;
 
-    @IsEmail()
     @IsNotEmpty()
     @MaxLength(32)
     @IsOptional()
     name?: string;
+
+    @IsNotEmpty()
+    @MaxLength(32)
+    @IsOptional()
+    semi: string;
+
 
     @IsString()
     @IsNotEmpty()
