@@ -1,4 +1,4 @@
-import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Inject, Injectable } from '@nestjs/common';
 import { DatabaseService } from '@database/database.service';
 import { Role, User } from '@prisma/client';
 import { genSaltSync, hashSync } from 'bcrypt'
@@ -12,18 +12,26 @@ import { CreateUserDto } from './dto/CreateUser.dto';
 @Injectable()
 export class UserService {
     constructor(private readonly databaseService: DatabaseService,
-                @Inject(CACHE_MANAGER) private cacheManager: Cache,
-                private readonly configService: ConfigService,
                 private readonly photoService: PhotoService
     ){}
 
-    createUser(user: Partial<User>){
-        const hashedPassword = this.hashPassword(user.password)
+    async create(dto: CreateUserDto, role?: Role){
+        const user = await this.findByEmail(dto.email);
+        if (user){
+            throw new ConflictException(`User with email ${dto.email} have already registered`)
+        }
+        dto.password = this.hashPassword(dto.password)
+        if (role) {
+            return this.databaseService.user.create({
+                data: {
+                    ...dto,
+                    role
+                }
+            })
+        }
         return this.databaseService.user.create({
             data: {
-                email: user.email,
-                name: user.name,
-                password: hashedPassword
+                ...dto,
             }
         })
     }
@@ -32,25 +40,20 @@ export class UserService {
         return this.databaseService.user.findMany();
     }
 
-    async findOne(scan: string, isReset = false){
-        if (isReset){
-            await this.cacheManager.del(scan);
-        }
-        const user = await this.cacheManager.get<User>(scan);
-        if (!user){
-            const user = this.databaseService.user.findFirst({where: {
-                OR: [
-                    {id: scan},
-                    {email: scan}
-                ]
-            }});
-            if (!user){
-                return null;
+    async findOne(id: string) {
+        return this.databaseService.user.findUnique({
+            where: {
+                id
             }
-            await this.cacheManager.set(scan, user, convertTimeToSeconds(this.configService.get('JWT_EXP')));
-            return user;
-        }
-        return user
+        });
+    }
+
+    async findByEmail(email: string) {
+        return this.databaseService.user.findUnique({
+            where: {
+                email
+            }
+        });
     }
 
     async update(id: string,  user: JwtPayload, dto: Partial<UpdateUserDto>, file: Express.Multer.File){
@@ -60,7 +63,7 @@ export class UserService {
         let updateData: any = {
             ...dto
         }
-        const userData = await this.databaseService.user.findUnique({where: {id}});
+        const userData = await this.findOne(id)
         if(file){
             if (userData.photo){
                 await this.photoService.deletePhotoByUrl(userData.photo)
@@ -81,7 +84,6 @@ export class UserService {
         if (id !== user.id && user.role !== Role.SUPER){
             throw new ForbiddenException()
         }
-        await this.cacheManager.del(id);
         return this.databaseService.user.delete({where: { id }, select: {id: true}})
     }
 

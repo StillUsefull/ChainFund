@@ -1,12 +1,16 @@
 -- CreateEnum
 CREATE TYPE "Role" AS ENUM ('USER', 'ADMIN', 'SUPER');
 
+-- CreateEnum
+CREATE TYPE "Category" AS ENUM ('MILITARY', 'HEALTH', 'DEVELOPMENT', 'TECH', 'ECO', 'ART');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "semi" TEXT,
     "telegram" TEXT,
     "photo" TEXT,
     "role" "Role" NOT NULL DEFAULT 'USER',
@@ -26,12 +30,12 @@ CREATE TABLE "tokens" (
 -- CreateTable
 CREATE TABLE "Post" (
     "id" TEXT NOT NULL,
-    "published" BOOLEAN NOT NULL DEFAULT false,
-    "title" VARCHAR(255) NOT NULL,
-    "text" TEXT NOT NULL,
-    "socialLink" TEXT NOT NULL,
+    "title" VARCHAR(255),
+    "text" TEXT,
+    "socialLink" TEXT,
     "photo" TEXT,
     "publish" BOOLEAN NOT NULL DEFAULT false,
+    "archived" BOOLEAN NOT NULL DEFAULT false,
     "authorId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -42,12 +46,17 @@ CREATE TABLE "Post" (
 -- CreateTable
 CREATE TABLE "CashCollection" (
     "id" TEXT NOT NULL,
-    "title" TEXT NOT NULL,
+    "title" TEXT,
+    "photo" TEXT,
     "authorId" TEXT,
-    "goal" DOUBLE PRECISION NOT NULL,
-    "state" DOUBLE PRECISION NOT NULL,
-    "text" TEXT NOT NULL,
+    "goal" DOUBLE PRECISION,
+    "state" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "rating" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "text" TEXT,
+    "googlePay" TEXT,
+    "category" "Category" NOT NULL,
     "publish" BOOLEAN NOT NULL DEFAULT false,
+    "achieved" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 

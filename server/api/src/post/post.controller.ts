@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/CreatePost.dto';
-import { Roles, UserDecorator } from '@common/decorators';
+import { Public, Roles, UserDecorator } from '@common/decorators';
 import { JwtPayload } from '@auth/interfaces/JwtPayload';
 import { UpdatePostDto } from './dto/UpdatePost.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -9,10 +9,12 @@ import { multerOptions } from '@common/options/multer.option';
 import { RoleGuard } from '@auth/guards/role.guard';
 import { Role } from '@prisma/client';
 
+
 @Controller('post')
 export class PostController {
     constructor(private readonly postService: PostService){}
 
+    @Public()
     @Get()
     getAll(){
         return this.postService.getAll()
@@ -48,5 +50,13 @@ export class PostController {
     @Roles(Role.ADMIN, Role.SUPER)
     delete(@Param('id') id: string, @UserDecorator() user: JwtPayload){
         return this.postService.delete(id, user)
+    }
+
+
+    @Get('/publish/:id')
+    @UseGuards(RoleGuard)
+    @Roles(Role.ADMIN, Role.SUPER)
+    publish(@Param('id') id: string, @UserDecorator() user: JwtPayload){
+        return this.postService.publish(id, user);
     }
 }

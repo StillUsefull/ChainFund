@@ -29,6 +29,8 @@ export class CashCollectionController {
         return this.cashCollectionService.findOne(id);
     }
 
+    @UseGuards(RoleGuard)
+    @Roles(Role.ADMIN)
     @Get('/my')
     getMyCollections(@UserDecorator() user: JwtPayload){
         return this.cashCollectionService.getByUser(user);

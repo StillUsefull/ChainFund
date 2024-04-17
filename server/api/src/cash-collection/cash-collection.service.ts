@@ -1,5 +1,5 @@
 import { DatabaseService } from '@database/database.service';
-import { ConflictException, ForbiddenException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCollectionDto } from './dto/CreateCollection.dto';
 import { JwtPayload } from '@auth/interfaces/JwtPayload';
 import { PhotoService } from 'src/photo/photo.service';
@@ -95,4 +95,26 @@ export class CashCollectionService {
         throw new ConflictException('To publish your fund, you must fill in all fields')
     }
 
+    async promote(id: string, user: JwtPayload){
+        const collection = await this.databaseService.cashCollection.findUnique({where: {id}});
+        if (!collection){
+            throw new NotFoundException()
+        }
+        const rating = collection.rating;
+        if (rating.includes(user.id)){
+            throw new ConflictException('You have already promoted this fund')
+        }
+        await this.databaseService.cashCollection.update(
+            {
+                where: {id},
+                data: {
+                    rating: [...rating, user.id]
+                }
+            }
+        )
+        return {
+            status: HttpStatus.OK,
+            message: 'You promoted this fund'
+        }
+    }
 }

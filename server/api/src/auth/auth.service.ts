@@ -20,24 +20,19 @@ export class AuthService {
 
     private readonly logger = new Logger(AuthService.name);
 
-    async registration(dto: RegisterUserDto){
-        const user = await this.userService.findOne(dto.email);
-        if (user){
-            throw new ConflictException(`Користувач з поштою ${dto.email} вже зареєстрований`)
-        }
-        return this.userService.createUser(dto).catch(err => {
+    async registration(dto){
+        return this.userService.create(dto).catch(err => {
             this.logger.error(err)
             return null;
         })
     }
 
     async login(dto: LoginUserDto, userAgent: string): Promise<Tokens>{
-        const user = await this.userService.findOne(dto.email, true).catch(err => {
+        const user = await this.userService.findByEmail(dto.email).catch(err => {
             this.logger.error(err);
             return null;
         });
-
-        if (!user || !compareSync(dto.password, user.password)) throw new UnauthorizedException('Не правильний логін або пароль');
+        if (!user || !compareSync(dto.password, user.password)) throw new UnauthorizedException('Email and password doesn`t match');
 
         return this.generateTokens(user, userAgent);
 
@@ -92,7 +87,7 @@ export class AuthService {
         if(new Date(token.exp) < new Date()){
             throw new UnauthorizedException()
         }
-        const user = await this.userService.findOne(token.userId, true)
+        const user = await this.userService.findOne(token.userId)
         return this.generateTokens(user, userAgent);
     }
 

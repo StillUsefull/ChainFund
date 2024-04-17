@@ -22,7 +22,7 @@ export class AuthController {
     async register(@Body() dto: RegisterUserDto){
         const user = await this.authService.registration(dto)
         if (!user){
-            throw new BadRequestException(`Неможливо створити користувача`);
+            throw new BadRequestException(`This email already in use`);
         }
 
         return new GetUserDto(user);

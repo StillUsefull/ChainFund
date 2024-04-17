@@ -1,19 +1,22 @@
-import { IsBoolean, IsNotEmpty, IsString, IsUrl, MaxLength, isURL } from "class-validator"
+import { IsNotEmpty, IsOptional, IsString, IsUrl, MaxLength } from "class-validator"
 
 export class UpdatePostDto {
     @IsNotEmpty()
     @IsString()
     @MaxLength(20)
+    @IsOptional()
     title?: string
 
     @IsNotEmpty()
     @IsString()
     @MaxLength(4200)
+    @IsOptional()
     text?: string
 
-    @IsBoolean()
-    published?: boolean
-
     @IsUrl()
+    @IsOptional()
     socialLink?: string
+
+    @IsOptional()
+    publish: boolean
 }

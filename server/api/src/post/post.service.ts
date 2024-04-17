@@ -1,5 +1,5 @@
 import { DatabaseService } from '@database/database.service';
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreatePostDto } from './dto/CreatePost.dto';
 import { JwtPayload } from '@auth/interfaces/JwtPayload';
 import { Role } from '@prisma/client';
@@ -33,7 +33,7 @@ export class PostService {
     }
 
     async update(id: string, dto: UpdatePostDto, user: JwtPayload, photo?: Express.Multer.File){
-        const post = await this.databaseService.post.findUnique({where: {id}})
+        const post = await this.findOne(id)
         if (!post){
             throw new NotFoundException()
         }
@@ -44,7 +44,9 @@ export class PostService {
             ...dto
         };
         if (photo){
-            await this.photoService.deletePhotoByUrl(post.photo);
+            if (post.photo){
+                await this.photoService.deletePhotoByUrl(post.photo);
+            }
             const photoUrl = await this.photoService.uploadFile(photo);
             updateData.photo = photoUrl
         }
@@ -56,10 +58,30 @@ export class PostService {
 
     async delete(id: string, user: JwtPayload){
         const post = await this.databaseService.post.findUnique({where: {id}})
+        if (!post){
+            throw new ConflictException('There is no post that you try to delete')
+        }
         if (user.id !== post.authorId && user.role !== Role.SUPER){
             throw new ForbiddenException();
         }
         await this.photoService.deletePhotoByUrl(post.photo);
         return this.databaseService.post.delete({where: {id}})
+    }
+
+    async publish(id: string, user: JwtPayload){
+        const post = await this.findOne(id);
+        if (!post) {
+            throw new NotFoundException('Post not found.');
+        }
+    
+        if (post.publish) {
+            throw new ConflictException('This post is already published.');
+        }
+    
+        if (!post.title || !post.text || !post.photo || !post.socialLink) {
+            throw new ConflictException('To publish your post, you must fill in all fields.');
+        }
+    
+        return this.update(id, {publish: true}, user)
     }
 }

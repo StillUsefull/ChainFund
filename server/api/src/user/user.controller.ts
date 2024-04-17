@@ -7,6 +7,8 @@ import { Role } from '@prisma/client';
 import { UpdateUserDto } from './dto/UpdateUser.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from '@common/options/multer.option';
+import { CreateUserDto } from './dto/CreateUser.dto';
+import { RoleGuard } from '@auth/guards/role.guard';
 
 
 
@@ -46,10 +48,19 @@ export class UserController {
     }
 
     @UseInterceptors(GetUserDto)
+    @UseGuards(RoleGuard)
+    @Roles(Role.ADMIN, Role.SUPER)
     @Get('/iam')
     async iam(@UserDecorator() user: JwtPayload){
         return this.userService.findOne(user.id);
         
+    }
+
+    @Post('/admin')
+    @UseGuards(RoleGuard)
+    @Roles(Role.SUPER)
+    async createAdmin(@Body() dto: CreateUserDto){
+        return this.createAdmin(dto);
     }
 }
 

@@ -1,3 +1,4 @@
+import { Role } from "@prisma/client";
 import { IsEmail, IsNotEmpty, IsOptional, IsString, IsStrongPassword, Length, MaxLength } from "class-validator";
 
 
