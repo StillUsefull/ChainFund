@@ -8,7 +8,17 @@ import { Category, Comment, Role } from '@prisma/client';
 
 @Injectable()
 export class CashCollectionService {
-    constructor(private readonly databaseService: DatabaseService, private readonly photoService: PhotoService){}
+    categoryTemplate: any;
+    constructor(private readonly databaseService: DatabaseService, private readonly photoService: PhotoService){
+        this.categoryTemplate = {
+            'tech': Category.TECH,
+            'military': Category.MILITARY,
+            'health': Category.HEALTH,
+            'development': Category.DEVELOPMENT,
+            'eco': Category.ECO,
+            'art': Category.ART
+        }
+    }
 
     getAll(){
         return this.databaseService.cashCollection.findMany();
@@ -25,18 +35,36 @@ export class CashCollectionService {
         return this.databaseService.cashCollection.findMany({where: {authorId: user.id}})
     }
 
-    getByCategory(category: Category){
-        return this.databaseService.cashCollection.findMany({where: {category}})
+    getByCategory(category: string){
+        
+        if (!this.categoryTemplate[category]){
+            throw new NotFoundException('There is no that category');
+        }
+        return this.databaseService.cashCollection.findMany({where: {category: this.categoryTemplate[category]}})
     }
 
-    findOne(id: string){
-        return this.databaseService.cashCollection.findFirst({where: {id}})
+    async findOne(id: string){
+        const collection = await this.databaseService.cashCollection.findFirst({where: {id}});
+        if (!collection){
+            throw new NotFoundException('There is no fund with that id') 
+        }
+        return collection;
     }
 
     async create(dto: CreateCollectionDto, user: JwtPayload, photo?: Express.Multer.File) {
         const createData: any = {
             ...dto,
             authorId: user.id
+        }
+        if (dto.category){
+            if (!this.categoryTemplate[dto.category]){
+                throw new NotFoundException('There is no that category');
+            }
+            createData.category = this.categoryTemplate[dto.category];
+        }
+
+        if (dto.goal){
+            createData.goal = Number(dto.goal);
         }
         if (photo){
             const photoUrl = await this.photoService.uploadFile(photo);
@@ -58,6 +86,12 @@ export class CashCollectionService {
         }
         const updateData: any = {
             ...dto
+        }
+        if (dto.category){
+            if (!this.categoryTemplate[dto.category]){
+                throw new NotFoundException('There is no that category');
+            }
+            updateData.category = this.categoryTemplate[dto.category];
         }
         if (photo){
             await this.photoService.deletePhotoByUrl(collection.photo);
@@ -89,7 +123,7 @@ export class CashCollectionService {
             throw new ForbiddenException();
         }
 
-        if (collection.title && collection.text && collection.photo && collection.googlePay && collection.goal){
+        if (collection.title && collection.text && collection.photo && collection.googlePay && collection.goal && collection.category){
             return this.databaseService.cashCollection.update({where: {id}, data: {publish: true}});
         }
         throw new ConflictException('To publish your fund, you must fill in all fields')

@@ -21,7 +21,6 @@ export class CreateCollectionDto {
     text: string;
 
     @IsNotEmpty()
-    @IsOptional()
     category: Category;
 
     @IsNotEmpty()
