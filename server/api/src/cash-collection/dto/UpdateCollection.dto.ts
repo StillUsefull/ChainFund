@@ -10,7 +10,6 @@ export class UpdateCollectionDto {
     title: string;
 
     @IsNotEmpty()
-    @IsNumber()
     @IsOptional()
     goal: number;
 

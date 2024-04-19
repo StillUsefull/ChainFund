@@ -8,19 +8,38 @@ import { RoleGuard } from '@auth/guards/role.guard';
 import { UpdateCollectionDto } from './dto/UpdateCollection.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from '@common/options/multer.option';
+import { PaginationInterceptor } from '@common/pagination/pagination.interceptor';
+
 
 @Controller('cash-collection')
 export class CashCollectionController {
     constructor(private readonly cashCollectionService: CashCollectionService){}
 
+    
+    @Get('/all')
+    @UseInterceptors(PaginationInterceptor)
+    getAll(){
+        return this.cashCollectionService.getAll();
+    }
+
+    
     @Public()
     @Get()
+    @UseInterceptors(PaginationInterceptor)
     getPublic(){
         return this.cashCollectionService.getPublic()
     }
 
     @Public()
+    @UseInterceptors(PaginationInterceptor)
+    @Get('/archive')
+    getArchive(){
+        return this.cashCollectionService.getArchive();
+    }
+
+    @Public()
     @Get('/category/:category')
+    @UseInterceptors(PaginationInterceptor)
     getByCategory(@Param('category') category: string){
         return this.cashCollectionService.getByCategory(category)
     }
@@ -60,4 +79,18 @@ export class CashCollectionController {
     delete(@Param('id') id: string, @UserDecorator() user: JwtPayload){
         return this.cashCollectionService.delete(id, user);
     }
+
+
+    @UseGuards(RoleGuard)
+    @Roles(Role.ADMIN, Role.SUPER)
+    @Get('/publish/:id')
+    publish(@Param('id') id: string, @UserDecorator() user: JwtPayload){
+        return this.cashCollectionService.publish(id, user);
+    }
+
+    @Get('/promote/:id')
+    promote(@Param('id') id: string, @UserDecorator() user: JwtPayload){
+        return this.cashCollectionService.promote(id, user)
+    }
+
 }

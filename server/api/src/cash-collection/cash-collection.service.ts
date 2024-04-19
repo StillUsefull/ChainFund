@@ -6,6 +6,7 @@ import { PhotoService } from 'src/photo/photo.service';
 import { UpdateCollectionDto } from './dto/UpdateCollection.dto';
 import { Category, Comment, Role } from '@prisma/client';
 
+
 @Injectable()
 export class CashCollectionService {
     categoryTemplate: any;
@@ -24,6 +25,13 @@ export class CashCollectionService {
         return this.databaseService.cashCollection.findMany();
     }
 
+    getArchive(){
+        return this.databaseService.cashCollection.findMany({where: {
+            achieved: true,
+            publish: true
+        }})
+    }
+
     getPublic(){
         return this.databaseService.cashCollection.findMany({where: {
             publish: true,
@@ -40,7 +48,11 @@ export class CashCollectionService {
         if (!this.categoryTemplate[category]){
             throw new NotFoundException('There is no that category');
         }
-        return this.databaseService.cashCollection.findMany({where: {category: this.categoryTemplate[category]}})
+        return this.databaseService.cashCollection.findMany({where: 
+            {
+                category: this.categoryTemplate[category],
+                publish: true
+            }})
     }
 
     async findOne(id: string){
@@ -77,7 +89,7 @@ export class CashCollectionService {
     }
 
     async update(id: string, dto: UpdateCollectionDto, user: JwtPayload, photo: Express.Multer.File){
-        const collection = await this.databaseService.cashCollection.findUnique({where: {id}});
+        const collection = await this.findOne(id);
         if (!collection){
             throw new NotFoundException()
         }
@@ -93,13 +105,16 @@ export class CashCollectionService {
             }
             updateData.category = this.categoryTemplate[dto.category];
         }
+        if (dto.goal){
+            updateData.goal = Number(dto.goal);
+        }
         if (photo){
             await this.photoService.deletePhotoByUrl(collection.photo);
             const photoUrl = await this.photoService.uploadFile(photo);
             updateData.photo = photoUrl
         }
         return this.databaseService.cashCollection.update({
-            where: {id},
+            where: {id: collection.id},
             data: updateData
         })
     }
