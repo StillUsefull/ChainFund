@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty, IsString, IsStrongPassword, MaxLength } from 'class-validator'
 
-export class RegisterUserDto {
+export class RegistrationUserDto {
 
     @IsEmail()
     @IsNotEmpty()

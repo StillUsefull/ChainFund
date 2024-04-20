@@ -1,3 +1,4 @@
+import api from "@utils/api";
 import { Container, Nav, Navbar, NavDropdown, Button } from "react-bootstrap";
 
 export function Header() {
@@ -46,8 +47,13 @@ export function Header() {
                             <Nav.Link href='/help' style={{color: '#FFF148'}}>How to Start a Project</Nav.Link>
                         </Nav>
                         <Nav> 
+                            {/* {api.get('/user/iam') ? <><Button> My page <Button /> </> : <>
+                                        <Button variant="outline-primary" style={{background:'#FFF68C', fontFamily: "cursive"}} href='/registration' className="me-2">Registration</Button>
+                                        <Button variant="primary"  style={{color: '#FFF148', fontFamily: "cursive"}} href='/login'>Login</Button>
+                                    </>
+                            } */}
                             <Button variant="outline-primary" style={{background:'#FFF68C', fontFamily: "cursive"}} href='/registration' className="me-2">Registration</Button>
-                            <Button variant="primary"  style={{color: '#FFF148', fontFamily: "cursive"}} href='/login'>Login</Button>
+                                        <Button variant="primary"  style={{color: '#FFF148', fontFamily: "cursive"}} href='/login'>Login</Button>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>

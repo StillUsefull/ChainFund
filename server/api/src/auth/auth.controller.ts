@@ -1,7 +1,7 @@
 import { BadRequestException, Body, ClassSerializerInterceptor, Controller, Get, HttpStatus, Post, Req, Res, UnauthorizedException, UseGuards, UseInterceptors } from '@nestjs/common';
 import {Request, Response} from 'express'
 import { AuthService } from './auth.service';
-import { RegisterUserDto } from './dto/RegisterUser.dto';
+import { RegistrationUserDto } from './dto/RegistrationUser.dto';
 import { LoginUserDto } from './dto/LoginUser.dto';
 import { Tokens } from './interfaces/Tokens';
 import { ConfigService } from '@nestjs/config';
@@ -18,8 +18,8 @@ export class AuthController {
     constructor(private readonly authService: AuthService, private readonly configService: ConfigService){}
 
     @UseInterceptors(ClassSerializerInterceptor)
-    @Post('register')
-    async register(@Body() dto: RegisterUserDto){
+    @Post('registration')
+    async register(@Body() dto: RegistrationUserDto){
         const user = await this.authService.registration(dto)
         if (!user){
             throw new BadRequestException(`This email already in use`);
