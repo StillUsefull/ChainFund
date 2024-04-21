@@ -7,6 +7,11 @@ import { HelpPage } from '@routes/help-page';
 import { ErrorPage } from '@routes/error-page';
 import { RegisterPage } from "@routes/register-page";
 import { LoginPage } from "@routes/login-page";
+import { MyProfileSettingsPage } from "@routes/my-profile-settings-page";
+import { MyFundsPage } from "@routes/my-funds-page";
+import { MyPostsPage } from "@routes/my-posts-page";
+import { MyDonationsPage } from "@routes/my-donations-page";
+import { HelpProfilePage } from "@routes/help-profile-page";
 
 
 
@@ -47,5 +52,25 @@ export const router = createBrowserRouter([
   {
     path: '/login',
     element: <LoginPage />
+  },
+  {
+    path: '/profile/settings',
+    element: <MyProfileSettingsPage />
+  },
+  {
+    path: '/profile/funds',
+    element: <MyFundsPage />
+  },
+  {
+    path: '/profile/posts',
+    element: <MyPostsPage />
+  },
+  {
+    path: '/profile/donations',
+    element: <MyDonationsPage />
+  },
+  {
+    path: '/profile/help',
+    element: <HelpProfilePage />
   }
 ]);

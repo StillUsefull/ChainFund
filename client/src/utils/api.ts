@@ -3,7 +3,7 @@ import { baseUrl } from '@utils/baseUrl';
 
 
 const getAccessToken = () => {
-  return localStorage.getItem('accessToken').split(' ')[1];
+  return localStorage.getItem('accessToken');
 };
 
 

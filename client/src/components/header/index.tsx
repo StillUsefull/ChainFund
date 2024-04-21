@@ -1,7 +1,10 @@
-import api from "@utils/api";
+import { useAuth } from "@utils/auth";
 import { Container, Nav, Navbar, NavDropdown, Button } from "react-bootstrap";
 
 export function Header() {
+    const { isLoggedIn } = useAuth();
+
+
     return (
         <>
             <Navbar collapseOnSelect expand='md' style={{background: '#0061FF', height: '160px'}}>
@@ -47,13 +50,32 @@ export function Header() {
                             <Nav.Link href='/help' style={{color: '#FFF148'}}>How to Start a Project</Nav.Link>
                         </Nav>
                         <Nav> 
-                            {/* {api.get('/user/iam') ? <><Button> My page <Button /> </> : <>
-                                        <Button variant="outline-primary" style={{background:'#FFF68C', fontFamily: "cursive"}} href='/registration' className="me-2">Registration</Button>
-                                        <Button variant="primary"  style={{color: '#FFF148', fontFamily: "cursive"}} href='/login'>Login</Button>
-                                    </>
-                            } */}
-                            <Button variant="outline-primary" style={{background:'#FFF68C', fontFamily: "cursive"}} href='/registration' className="me-2">Registration</Button>
-                                        <Button variant="primary"  style={{color: '#FFF148', fontFamily: "cursive"}} href='/login'>Login</Button>
+                             {isLoggedIn ? (
+                                <>
+                                <Button
+                                    variant="primary"
+                                    style={{
+                                        background: '#FFF148',
+                                        fontFamily: "cursive",
+                                        color: '#0061FF',
+                                        fontSize: '20px', 
+                                        padding: '10px 20px', 
+                                        border: 'none', 
+                                        display: 'inline-block', 
+                                        textAlign: 'center', 
+                                        borderRadius: '5px' 
+                                    }}
+                                    href='/profile/settings'
+                                >
+                                    Profile
+                                </Button>
+                                </>
+                            ) : (
+                                <>
+                                    <Button variant="outline-primary" style={{ background: '#FFF68C', fontFamily: "cursive" }} href='/registration' className="me-2">Registration</Button>
+                                    <Button variant="primary" style={{ color: '#FFF148', fontFamily: "cursive" }} href='/login'>Login</Button>
+                                </>
+                            )}
                         </Nav>
                     </Navbar.Collapse>
                 </Container>

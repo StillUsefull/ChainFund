@@ -1,31 +1,37 @@
 import { useState } from 'react';
-import { Form, Button, Container, Alert } from 'react-bootstrap';
+import { Form, Button, Container } from 'react-bootstrap';
 import { ToastContainer } from 'react-toastify';
 import { notifyError, notifySuccess } from '@components/notifications';
 import { useNavigate } from 'react-router';
 import api from '@utils/api';
+import { useAuth } from '@utils/auth';
 
 export function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate()
+    const { setIsLoggedIn, fetchUser } = useAuth();
     const handleLogin = async (event) => {
         event.preventDefault();
-      
         try {
-          const response = await api.post('/auth/login', {
-            email,
-            password
-          });
-          localStorage.setItem('accessToken', response.data.accessToken);
-          notifySuccess('Login successful');
-          setTimeout(() => {
-              navigate('/');
-          }, 2000);
+            const response = await api.post('/auth/login', {
+                email,
+                password
+            });
+
+            localStorage.setItem('accessToken', response.data.accessToken);
+            setIsLoggedIn(true);
+            await fetchUser();  
+            notifySuccess('Login successful');
+            setTimeout(() => {
+                navigate('/');
+            }, 2000);
+        
         } catch (error) {
-          notifyError(error.response?.data?.message || 'An unexpected error occurred');
+            console.log(error);
+            notifyError(error.response?.data?.message || 'An unexpected error occurred');
         }
-      };
+    };
 
     return (
         <>

@@ -7,25 +7,18 @@ export class UpdateUserDto {
     @IsOptional()
     email?: string;
     
-    @IsString()
-    @IsNotEmpty()
-    @IsStrongPassword()
-    @IsOptional()
-    password?: string;
 
     @IsNotEmpty()
     @MaxLength(32)
     @IsOptional()
     name?: string;
 
-    @IsNotEmpty()
     @MaxLength(32)
     @IsOptional()
     semi: string;
 
 
     @IsString()
-    @IsNotEmpty()
     @IsOptional()
     telegram?: string;
 

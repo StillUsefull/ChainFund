@@ -1,7 +1,7 @@
-import { ConflictException, ForbiddenException, Inject, Injectable } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from '@database/database.service';
 import { Role, User } from '@prisma/client';
-import { genSaltSync, hashSync } from 'bcrypt'
+import { compareSync, genSaltSync, hashSync } from 'bcrypt'
 import { JwtPayload } from '@auth/interfaces/JwtPayload';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { ConfigService } from '@nestjs/config';
@@ -9,6 +9,7 @@ import { convertTimeToSeconds } from '@common/utils';
 import { UpdateUserDto } from './dto/UpdateUser.dto';
 import { PhotoService } from 'src/photo/photo.service';
 import { CreateUserDto } from './dto/CreateUser.dto';
+import { updatePasswordDto } from './dto/UpdatePassword.dto';
 @Injectable()
 export class UserService {
     constructor(private readonly databaseService: DatabaseService,
@@ -89,5 +90,20 @@ export class UserService {
 
     private hashPassword(password: string){
         return hashSync(password, genSaltSync(10));
+    }
+
+    async updatePassword(user: JwtPayload, dto: updatePasswordDto){
+        const data = await this.findOne(user.id);
+        if (!data){
+            throw new NotFoundException()
+        }
+        if (!user || !compareSync(dto.currentPassword, data.password)) throw new ConflictException('Current password doesn`t match');
+
+        return this.databaseService.user.update({
+            where: {id: data.id}, 
+            data: {
+                password: this.hashPassword(dto.newPassword)
+            }
+        })
     }
 }

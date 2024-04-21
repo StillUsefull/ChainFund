@@ -1,4 +1,4 @@
-import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, ParseIntPipe, ParseUUIDPipe, Post, Put, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, ParseIntPipe, ParseUUIDPipe, Post, Put, Req, UploadedFile, UseGuards, UseInterceptors, flatten } from '@nestjs/common';
 import { UserService } from './user.service';
 import { GetUserDto } from './dto/GetUser.dto';
 import {Public, Roles, UserDecorator} from '@common/decorators/index'
@@ -9,7 +9,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from '@common/options/multer.option';
 import { CreateUserDto } from './dto/CreateUser.dto';
 import { RoleGuard } from '@auth/guards/role.guard';
-
+import { updatePasswordDto } from './dto/UpdatePassword.dto';
 
 
 @Controller('user')
@@ -47,9 +47,12 @@ export class UserController {
       
     }
 
+    @Put('/change-password')
+    async updatePassword(@UserDecorator() user: JwtPayload, @Body() dto: updatePasswordDto){
+        return this.userService.updatePassword(user, dto);
+    }
+
     @UseInterceptors(GetUserDto)
-    @UseGuards(RoleGuard)
-    @Roles(Role.ADMIN, Role.SUPER)
     @Get('/iam')
     async iam(@UserDecorator() user: JwtPayload){
         return this.userService.findOne(user.id);
