@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UploadApiErrorResponse, UploadApiResponse, v2 as cloudinary } from 'cloudinary';
 import * as streamifier from 'streamifier'
-import { v4 as uuidv4 } from 'uuid';
+
 @Injectable()
 export class PhotoService {
     uploadFile(file: Express.Multer.File) {

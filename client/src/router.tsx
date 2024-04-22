@@ -12,6 +12,7 @@ import { MyFundsPage } from "@routes/my-funds-page";
 import { MyPostsPage } from "@routes/my-posts-page";
 import { MyDonationsPage } from "@routes/my-donations-page";
 import { HelpProfilePage } from "@routes/help-profile-page";
+import { UpdateFundPage } from "@routes/my-funds-update-page";
 
 
 
@@ -72,5 +73,9 @@ export const router = createBrowserRouter([
   {
     path: '/profile/help',
     element: <HelpProfilePage />
+  },
+  {
+    path: '/profile/funds/:id',
+    element: <UpdateFundPage />
   }
 ]);

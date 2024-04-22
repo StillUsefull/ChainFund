@@ -100,7 +100,9 @@ export class UserService {
         if (!user || !compareSync(dto.currentPassword, data.password)) throw new ConflictException('Current password doesn`t match');
 
         return this.databaseService.user.update({
-            where: {id: data.id}, 
+            where: {
+                id: data.id
+            }, 
             data: {
                 password: this.hashPassword(dto.newPassword)
             }

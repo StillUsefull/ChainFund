@@ -21,8 +21,13 @@ export function ChangePasswordForm() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        if (passwords.newPassword.length < 6) {
-            notifyError('New password must be at least 6 characters long.');
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[*/@."']).*$/;
+        if (!passwordRegex.test(passwords.newPassword)) {
+            notifyError('New password must contain at least one lowercase letter, one uppercase letter, and one special character (*/@."');
+            return;
+        }
+        if (passwords.newPassword.length < 7) {
+            notifyError('New password must be at least 7 characters long.');
             return;
         }
         try {

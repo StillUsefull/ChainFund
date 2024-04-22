@@ -267,6 +267,7 @@ export function FundPage() {
                                     goal={collection.goal}
                                     category={collection.category}
                                     photo={collection.photo}
+                                    admin={false}
                                 />
                             </Col>
                         ))}
