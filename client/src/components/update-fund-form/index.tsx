@@ -3,15 +3,14 @@ import { Container, Form, Button } from 'react-bootstrap';
 import { notifyError, notifySuccess } from '@components/notifications';
 import { ToastContainer } from 'react-toastify';
 import api from '@utils/api';
-import { CashCollectionCard } from '@components/cash-collection-card';
 
 const categories = {
-    'Technology and Innovation': 'tech',
-    'Military Support': 'military',
-    'Health and Medical': 'health',
-    'Development and Open Source': 'development',
-    'Enviroment and Conservation': 'eco',
-    'Art and Culture': 'art'
+    'TECH': 'Technology and Innovation',
+    'MILITARY': 'Military Support',
+    'HEALTH': 'Health and Medical',
+    'DEVELOPMENT': 'Development and Open Source',
+    'ECO': 'Environment and Conservation',
+    'ART': 'Art and Culture',
 };
 
 export function UpdateFundForm({ fundId }) {
@@ -19,23 +18,22 @@ export function UpdateFundForm({ fundId }) {
         title: '',
         goal: 0,
         text: '',
-        category: 'tech',
-        googlePay: '', 
-        photo: '',
+        category: 'TECH',
+        googlePay: ''
     });
     const [loading, setLoading] = useState(false);
     const [file, setFile] = useState<File | null>(null);
 
     useEffect(() => {
         const fetchFundData = async () => {
+            setLoading(true);
             try {
-                setLoading(true);
                 const response = await api.get(`/cash-collection/findOne/${fundId}`);
                 setFundData(response.data);
                 setLoading(false);
             } catch (err) {
+                notifyError('Failed to fetch fund details');
                 console.error(err);
-                notifyError('Failed to load fund data');
                 setLoading(false);
             }
         };
@@ -43,14 +41,14 @@ export function UpdateFundForm({ fundId }) {
         fetchFundData();
     }, [fundId]);
 
-    const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const { name, value } = event.target;
-        setFundData(prev => ({ ...prev, [name]: value }));
-    };
-
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files ? event.target.files[0] : null;
         setFile(file);
+    };
+
+    const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        const { name, value } = event.target;
+        setFundData(prev => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = async (event: FormEvent) => {
@@ -58,23 +56,23 @@ export function UpdateFundForm({ fundId }) {
         if (loading) return;
 
         const formData = new FormData();
-        Object.entries(fundData).forEach(([key, value]) => {
-            if (fundData[key] !== value) {
-                formData.append(key, `${value}`);
-            }
-        });
+        formData.append('title', fundData.title);
+        formData.append('goal', String(fundData.goal));
+        formData.append('text', fundData.text);
+        formData.append('category', fundData.category);
+        formData.append('googlePay', fundData.googlePay);
         if (file) {
             formData.append('file', file, file.name);
         }
-
+        
         try {
             setLoading(true);
-            const response = await api.put(`/cash-collection/update/${fundId}`, formData, {
+            await api.put(`/cash-collection/update/${fundId}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-             console.log(response)
+            
             notifySuccess('Fund updated successfully!');
             setLoading(false);
         } catch (err) {
@@ -87,18 +85,8 @@ export function UpdateFundForm({ fundId }) {
     return (
         <>
             <ToastContainer />
-            <Container style={{ marginTop: '20px' }}>
+            <Container style={{ marginTop: '20px', fontFamily: 'cursive' }}>
                 <h2>Update Fund</h2>
-                <CashCollectionCard 
-                        key={fundId}  
-                        id={fundId} 
-                        title={fundData.title} 
-                        description={fundData.text} 
-                        goal={fundData.goal} 
-                        category={fundData.category} 
-                        photo={fundData.photo}
-                        admin={true}
-                    />
                 <Form onSubmit={handleSubmit}>
                     <Form.Group className="mb-3">
                         <Form.Label>Title</Form.Label>
@@ -115,8 +103,8 @@ export function UpdateFundForm({ fundId }) {
                     <Form.Group className="mb-3">
                         <Form.Label>Category</Form.Label>
                         <Form.Control as="select" name="category" value={fundData.category} onChange={handleInputChange}>
-                            {Object.entries(categories).map(([key, value]) => (
-                                <option key={key} value={value}>{key}</option>
+                            {Object.keys(categories).map(key => (
+                                <option key={key} value={key}>{categories[key]}</option>
                             ))}
                         </Form.Control>
                     </Form.Group>
@@ -125,7 +113,7 @@ export function UpdateFundForm({ fundId }) {
                         <Form.Control type="url" name="googlePay" value={fundData.googlePay} onChange={handleInputChange} />
                     </Form.Group>
                     <Form.Group className="mb-3">
-                        <Form.Label>{'File (.jpg only)'}</Form.Label>
+                        <Form.Label>File (.jpg only)</Form.Label>
                         <Form.Control type="file" onChange={handleFileChange} accept=".jpg" />
                     </Form.Group>
                     <Button variant="primary" type="submit" disabled={loading}>

@@ -12,12 +12,12 @@ export class CashCollectionService {
     categoryTemplate: any;
     constructor(private readonly databaseService: DatabaseService, private readonly photoService: PhotoService){
         this.categoryTemplate = {
-            'tech': Category.TECH,
-            'military': Category.MILITARY,
-            'health': Category.HEALTH,
-            'development': Category.DEVELOPMENT,
-            'eco': Category.ECO,
-            'art': Category.ART
+            'TECH': Category.TECH,
+            'MILITARY': Category.MILITARY,
+            'HEALTH': Category.HEALTH,
+            'DEVELOPMENT': Category.DEVELOPMENT,
+            'ECO': Category.ECO,
+            'ART': Category.ART
         }
     }
 

@@ -4,6 +4,7 @@ import { IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl, MaxLength } from "cl
 
 export class UpdateCollectionDto {
     @MaxLength(50)
+    @IsOptional()
     title: string;
 
     @IsOptional()

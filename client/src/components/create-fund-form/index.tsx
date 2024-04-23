@@ -3,30 +3,28 @@ import { Container, Form, Button } from 'react-bootstrap';
 import { notifyError, notifySuccess } from '@components/notifications';
 import { ToastContainer } from 'react-toastify';
 import api from '@utils/api';
-
+import { useNavigate } from 'react-router';
 
 const categories = {
-    'Technology and Innovation': 'tech',
-    'Military Support': 'military',
-    'Health and Medical': 'health',
-    'Development and Open Source': 'development',
-    'Enviroment and Conservation': 'eco',
-    'Art and Culture': 'art'
+    'TECH': 'Technology and Innovation',
+    'MILITARY': 'Military Support',
+    'HEALTH': 'Health and Medical',
+    'DEVELOPMENT': 'Development and Open Source',
+    'ECO': 'Environment and Conservation',
+    'ART': 'Art and Culture',
 };
 
-
-
 export function CreateFundForm() {
-    const [fundData, setFundData]: [any, any] = useState({
+    const [fundData, setFundData] = useState({
         title: '',
         goal: 0,
         text: '',
-        category: 'tech', 
+        category: 'TECH', 
         googlePay: ''
     });
     const [loading, setLoading] = useState(false);
-
     const [file, setFile] = useState<File | null>(null);
+    const navigate = useNavigate();
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files ? event.target.files[0] : null;
         setFile(file);
@@ -51,15 +49,16 @@ export function CreateFundForm() {
     
         try {
             setLoading(true);
-            await api.post('/cash-collection/create', formData, {
+            
+            const response = await api.post('/cash-collection/create', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
+            
             notifySuccess('Fund created successfully!');
-            setFundData({ title: '', goal: 0, text: '', category: 'tech', googlePay: '' });
-            setFile(null);
-            setLoading(false);
+            setTimeout(() => {navigate(`/profile/funds/${response.data.id}`)}, 2000)
+            
         } catch (err) {
             notifyError('Failed to create fund');
             console.error(err);
@@ -70,7 +69,7 @@ export function CreateFundForm() {
     return (
         <>
             <ToastContainer />
-            <Container style={{ marginTop: '20px', fontFamily: 'cursive'}}>
+            <Container style={{ marginTop: '20px', fontFamily: 'cursive' }}>
                 <h2>Create Fund</h2>
                 <Form onSubmit={handleSubmit}>
                     <Form.Group className="mb-3">
@@ -88,8 +87,8 @@ export function CreateFundForm() {
                     <Form.Group className="mb-3">
                         <Form.Label>Category</Form.Label>
                         <Form.Control as="select" name="category" value={fundData.category} onChange={handleInputChange}>
-                            {Object.entries(categories).map(([key, value]) => (
-                                <option key={key} value={value}>{key}</option>
+                            {Object.keys(categories).map(key => (
+                                <option key={key} value={key}>{categories[key]}</option>
                             ))}
                         </Form.Control>
                     </Form.Group>
@@ -98,7 +97,7 @@ export function CreateFundForm() {
                         <Form.Control type="url" name="googlePay" value={fundData.googlePay} onChange={handleInputChange} />
                     </Form.Group>
                     <Form.Group className="mb-3">
-                        <Form.Label>{'File (.jpg only)'}</Form.Label>
+                        <Form.Label>File (.jpg only)</Form.Label>
                         <Form.Control type="file" onChange={handleFileChange} accept=".jpg" />
                     </Form.Group>
                     <Button variant="primary" type="submit" disabled={loading}>
