@@ -4,6 +4,7 @@ import { notifyError, notifySuccess } from '@components/notifications';
 import { ToastContainer } from 'react-toastify';
 import api from '@utils/api';
 
+
 const categories = {
     'TECH': 'Technology and Innovation',
     'MILITARY': 'Military Support',
@@ -19,7 +20,8 @@ export function UpdateFundForm({ fundId }) {
         goal: 0,
         text: '',
         category: 'TECH',
-        googlePay: ''
+        googlePay: '',
+        photo: '',
     });
     const [loading, setLoading] = useState(false);
     const [file, setFile] = useState<File | null>(null);
@@ -65,21 +67,30 @@ export function UpdateFundForm({ fundId }) {
             formData.append('file', file, file.name);
         }
         
-        try {
-            setLoading(true);
-            await api.put(`/cash-collection/update/${fundId}`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
+        
+        setLoading(true);
+        await api.put(`/cash-collection/update/${fundId}`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+            .then((success) => {
+                console.log(success)
+                notifySuccess('Fund updated successfully!');
+            })
+            .catch(err => {
+                if (err.response.status != 500){
+                    let message = err.response.data.message[0];
+                    message = message.charAt(0).toUpperCase() + message.slice(1);
+                    notifyError(message);
+                } else {
+                    notifyError('Failed to update fund');
                 }
             });
             
-            notifySuccess('Fund updated successfully!');
-            setLoading(false);
-        } catch (err) {
-            notifyError('Failed to update fund');
-            console.error(err);
-            setLoading(false);
-        }
+
+        setLoading(false);
+        
     };
 
     return (
@@ -87,6 +98,7 @@ export function UpdateFundForm({ fundId }) {
             <ToastContainer />
             <Container style={{ marginTop: '20px', fontFamily: 'cursive' }}>
                 <h2>Update Fund</h2>
+                
                 <Form onSubmit={handleSubmit}>
                     <Form.Group className="mb-3">
                         <Form.Label>Title</Form.Label>

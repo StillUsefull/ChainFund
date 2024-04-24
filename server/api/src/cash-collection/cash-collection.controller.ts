@@ -69,7 +69,7 @@ export class CashCollectionController {
     @Roles(Role.ADMIN, Role.SUPER)
     @UseInterceptors(FileInterceptor('file', multerOptions))
     @Put('/update/:id')
-    update(@Body() dto: UpdateCollectionDto, @Param('is') id: string, @UserDecorator() user: JwtPayload, @UploadedFile() file?: Express.Multer.File){
+    update(@Body() dto: UpdateCollectionDto, @Param('id') id: string, @UserDecorator() user: JwtPayload, @UploadedFile() file?: Express.Multer.File){
         return this.cashCollectionService.update(id, dto, user, file);
     }
 

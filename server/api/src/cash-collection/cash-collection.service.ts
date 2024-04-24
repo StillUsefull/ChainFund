@@ -114,7 +114,7 @@ export class CashCollectionService {
             updateData.photo = photoUrl
         }
         return this.databaseService.cashCollection.update({
-            where: {id: collection.id},
+            where: {id},
             data: updateData
         })
     }
