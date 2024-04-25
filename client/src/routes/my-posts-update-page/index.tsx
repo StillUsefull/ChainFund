@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { ConfirmationDialog } from "@components/confirmation-dialog";
 import { notifyError, notifySuccess } from "@components/notifications";
 import SidebarMenu from "@components/side-bar-menu";
-import { UpdateFundForm } from "@components/update-fund-form";
-import { ConfirmationDialog } from "@components/confirmation-dialog";
+import { UpdatePostForm } from "@components/update-post-form";
 import api from "@utils/api";
+import { useState } from "react";
 import { Button, ButtonGroup, Container } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 
-export function UpdateFundPage() {
+
+
+export function UpdatePostPage(){
     let { id } = useParams();
     const navigate = useNavigate();
 
@@ -15,9 +17,9 @@ export function UpdateFundPage() {
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
     const handlePublish = async () => {
-        await api.get(`/cash-collection/publish/${id}`)
+        await api.get(`/post/publish/${id}`)
             .then(() => {
-                notifySuccess('Your fund was published');
+                notifySuccess('Your post was published');
             })
             .catch((err) => {
                 if (err.response.status != 500){
@@ -32,11 +34,11 @@ export function UpdateFundPage() {
     };
 
     const handleDelete = async () => {
-        await api.delete(`/cash-collection/delete/${id}`)
+        await api.delete(`/post/delete/${id}`)
             .then(() => {
                 notifySuccess('Your fund was deleted');
                 setTimeout(() => {
-                    navigate('/profile/funds');
+                    navigate('/profile/posts');
                 }, 2000);
             })
             .catch((err) => {
@@ -49,7 +51,7 @@ export function UpdateFundPage() {
         <>
             <SidebarMenu />
             <Container style={{ marginLeft: '250px', padding: '20px' }}>
-                <UpdateFundForm fundId={id} />
+                <UpdatePostForm postId={id} />
                 <div className="d-flex justify-content-end mt-4">
                     <ButtonGroup>
                         <Button variant="success" onClick={() => setShowPublishDialog(true)}>Publish</Button>

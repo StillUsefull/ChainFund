@@ -3,16 +3,11 @@ import { Container, Form, Button } from 'react-bootstrap';
 import { notifyError, notifySuccess } from '@components/notifications';
 import { ToastContainer } from 'react-toastify';
 import api from '@utils/api';
+import { CashCollectionCard } from '@components/cash-collection-card';
+import { categories } from '@utils/consts/categories';
 
 
-const categories = {
-    'TECH': 'Technology and Innovation',
-    'MILITARY': 'Military Support',
-    'HEALTH': 'Health and Medical',
-    'DEVELOPMENT': 'Development and Open Source',
-    'ECO': 'Environment and Conservation',
-    'ART': 'Art and Culture',
-};
+
 
 export function UpdateFundForm({ fundId }) {
     const [fundData, setFundData] = useState({
@@ -98,7 +93,7 @@ export function UpdateFundForm({ fundId }) {
             <ToastContainer />
             <Container style={{ marginTop: '20px', fontFamily: 'cursive' }}>
                 <h2>Update Fund</h2>
-                
+                <CashCollectionCard id={fundId} title={fundData.title} description={fundData.text} goal={fundData.goal} category={categories[fundData.category]} photo={fundData.photo} admin={true}/>
                 <Form onSubmit={handleSubmit}>
                     <Form.Group className="mb-3">
                         <Form.Label>Title</Form.Label>

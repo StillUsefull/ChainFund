@@ -20,12 +20,12 @@ export class PostController {
         return this.postService.getAll()
     }
 
-    @Get('/:id')
+    @Get('/findOne/:id')
     findOne(@Param('id') id: string){
         return this.postService.findOne(id);
     }
 
-    @Post()
+    @Post('/create')
     @UseGuards(RoleGuard)
     @Roles(Role.ADMIN, Role.SUPER)
     @UseInterceptors(FileInterceptor('file', multerOptions))
@@ -33,7 +33,7 @@ export class PostController {
         return this.postService.create(dto, user, file);
     }
 
-    @Put('/:id')
+    @Put('/update/:id')
     @UseGuards(RoleGuard)
     @Roles(Role.ADMIN, Role.SUPER)
     @UseInterceptors(FileInterceptor('file', multerOptions))
@@ -45,7 +45,7 @@ export class PostController {
             return this.postService.update(id, dto, user, file)
     }
 
-    @Delete('/:id')
+    @Delete('/delete/:id')
     @UseGuards(RoleGuard)
     @Roles(Role.ADMIN, Role.SUPER)
     delete(@Param('id') id: string, @UserDecorator() user: JwtPayload){
@@ -58,5 +58,12 @@ export class PostController {
     @Roles(Role.ADMIN, Role.SUPER)
     publish(@Param('id') id: string, @UserDecorator() user: JwtPayload){
         return this.postService.publish(id, user);
+    }
+
+    @Get('/my')
+    @UseGuards(RoleGuard)
+    @Roles(Role.ADMIN)
+    getMy(@UserDecorator() user: JwtPayload){
+        return this.postService.getMyPosts(user)
     }
 }

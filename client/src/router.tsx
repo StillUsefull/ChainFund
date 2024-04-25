@@ -13,6 +13,8 @@ import { MyPostsPage } from "@routes/my-posts-page";
 import { MyDonationsPage } from "@routes/my-donations-page";
 import { HelpProfilePage } from "@routes/help-profile-page";
 import { UpdateFundPage } from "@routes/my-funds-update-page";
+import { UpdatePostPage } from "@routes/my-posts-update-page";
+import { OneFundPage } from "@routes/one-fund-page";
 
 
 
@@ -32,6 +34,10 @@ export const router = createBrowserRouter([
     path: "/funds/:category",
     element: <FundPage />,
     errorElement: <ErrorPage />
+  },
+  {
+    path: "/funds/one/:id",
+    element: <OneFundPage />
   },
   {
     path: "/creators",
@@ -63,8 +69,16 @@ export const router = createBrowserRouter([
     element: <MyFundsPage />
   },
   {
+    path: '/profile/funds/:id',
+    element: <UpdateFundPage />
+  },
+  {
     path: '/profile/posts',
     element: <MyPostsPage />
+  },
+  {
+    path: '/profile/posts/:id',
+    element: <UpdatePostPage />
   },
   {
     path: '/profile/donations',
@@ -74,8 +88,4 @@ export const router = createBrowserRouter([
     path: '/profile/help',
     element: <HelpProfilePage />
   },
-  {
-    path: '/profile/funds/:id',
-    element: <UpdateFundPage />
-  }
 ]);

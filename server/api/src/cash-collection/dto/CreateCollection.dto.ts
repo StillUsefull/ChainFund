@@ -15,6 +15,7 @@ export class CreateCollectionDto {
 
     @MaxLength(5000)
     @IsString()
+    @IsOptional()
     text: string;
 
     @IsNotEmpty()

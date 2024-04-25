@@ -109,7 +109,9 @@ export class CashCollectionService {
             updateData.goal = Number(dto.goal);
         }
         if (photo){
-            await this.photoService.deletePhotoByUrl(collection.photo);
+            if (collection.photo){
+                await this.photoService.deletePhotoByUrl(collection.photo);
+            }
             const photoUrl = await this.photoService.uploadFile(photo);
             updateData.photo = photoUrl
         }
@@ -124,7 +126,9 @@ export class CashCollectionService {
         if (user.id !== collection.authorId && user.role !== Role.SUPER){
             throw new ForbiddenException();
         }
-        await this.photoService.deletePhotoByUrl(collection.photo);
+        if (collection.photo){
+            await this.photoService.deletePhotoByUrl(collection.photo);
+        }
         return this.databaseService.cashCollection.delete({where: {id}})
     }
 

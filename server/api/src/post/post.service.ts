@@ -84,4 +84,8 @@ export class PostService {
     
         return this.update(id, {publish: true}, user)
     }
+
+    async getMyPosts(user: JwtPayload){
+        return this.databaseService.post.findMany({where: {authorId: user.id}})
+    }
 }
