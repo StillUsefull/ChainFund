@@ -23,5 +23,5 @@ export class CreateCollectionDto {
 
     
     @IsOptional()
-    googlePay: String;
+    payPalEmail: String;
 }

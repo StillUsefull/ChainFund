@@ -20,5 +20,5 @@ export class UpdateCollectionDto {
 
     @IsUrl()
     @IsOptional()
-    googlePay: String;
+    payPalEmail: String;
 }

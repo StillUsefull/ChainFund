@@ -1,54 +1,47 @@
-import GooglePayButton from '@google-pay/button-react';
-import api from '@utils/api';
 
-export function PayButton({amount, projectId}) {
-    const handlePaymentSuccess = (paymentResponse) => {
-        console.log('Payment successful', paymentResponse);
-    
-        
-        api.post('/transactions/create-payout', {
-            receiver_email: projectId,
-            amount: amount
-          })
-          .then(response => JSON.stringify(response))
-          .then(data => console.log('Payout created', data))
-          .catch(error => console.error('Error:', error));
-      };
-    return (
-        <GooglePayButton
-        environment="TEST"
-        paymentRequest={{
-          apiVersion: 2,
-          apiVersionMinor: 0,
-          allowedPaymentMethods: [
-            {
-              type: 'CARD',
-              parameters: {
-                allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
-                allowedCardNetworks: ['MASTERCARD', 'VISA']
-              },
-              tokenizationSpecification: {
-                type: 'PAYMENT_GATEWAY',
-                parameters: {
-                  gateway: 'example',
-                  gatewayMerchantId: 'exampleGatewayMerchantId'
-                }
-              }
-            }
-          ],
-          merchantInfo: {
-            merchantId: '12345678901234567890',
-            merchantName: 'Demo Merchant'
-          },
-          transactionInfo: {
-            totalPriceStatus: 'FINAL',
-            totalPriceLabel: 'Total',
-            totalPrice: amount.toString(),
-            currencyCode: 'USD',
-            countryCode: 'US'
-          }
-        }}
-        onLoadPaymentData={handlePaymentSuccess}
+import { PayPalButtons } from "@paypal/react-paypal-js";
+import api from "@utils/api";
+
+export function PayButton({amount, fundId, receiverEmail}) {
+  const handleApprove = async (details) => {
+   // details.payer.name.given_name;
+    //await api.post('/transaction/create-payout')
+    console.log(details)
+  };
+
+  return (
+      <PayPalButtons 
+          style={{ layout: "vertical" }}
+          createOrder={(data, actions) => {
+              return actions.order.create({
+                  purchase_units: [{
+                      amount: {
+                        currency_code: 'USD',
+                        value: String(200)
+                      },
+                      payee: {
+                          email_address: receiverEmail
+                      }
+                  }],
+                  intent: "CAPTURE",
+                  application_context: {
+                      shipping_preference: "NO_SHIPPING" 
+                  }
+              });
+          }}
+          onApprove={(data, actions) => {
+              return actions.order.capture().then(details => {
+                  handleApprove(details);
+              });
+          }}
+          onError={(err) => {
+              console.error("Payment Error: ", err);
+              
+          }}
+          onCancel={() => {
+              console.log("Payment cancelled.");
+              
+          }}
       />
-    );
+  );
 }

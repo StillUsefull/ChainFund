@@ -79,12 +79,12 @@ model CashCollection {
   state        Float @default(0)
   rating       String[] @default([])
   text         String?
-  googlePay    String?
+  payPalEmail  String?
   category     Category 
   comments     Comment[] 
   transactions Transaction[]
   publish      Boolean @default(false)
-  achieved      Boolean @default(false)
+  achieved     Boolean @default(false)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }

@@ -17,21 +17,6 @@ services:
       - postgres
     restart: unless-stopped
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: chainfund-admin
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@admin.com}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-123456}
-    volumes:
-      - pgadmin:/root/.pgadmin
-      - ./db/structure.sql:/docker-entrypoint-initdb.d/structure.sql
-    ports:
-      - "${PGADMIN_PORT:-5050}:80"
-    networks:
-      - postgres
-    restart: unless-stopped
-
 networks:
   postgres:
     driver: bridge

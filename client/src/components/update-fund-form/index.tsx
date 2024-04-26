@@ -15,7 +15,7 @@ export function UpdateFundForm({ fundId }) {
         goal: 0,
         text: '',
         category: 'TECH',
-        googlePay: '',
+        payPalEmail: '',
         photo: '',
     });
     const [loading, setLoading] = useState(false);
@@ -57,7 +57,7 @@ export function UpdateFundForm({ fundId }) {
         formData.append('goal', String(fundData.goal));
         formData.append('text', fundData.text);
         formData.append('category', fundData.category);
-        formData.append('googlePay', fundData.googlePay);
+        formData.append('payPalEmail', fundData.payPalEmail);
         if (file) {
             formData.append('file', file, file.name);
         }
@@ -116,8 +116,8 @@ export function UpdateFundForm({ fundId }) {
                         </Form.Control>
                     </Form.Group>
                     <Form.Group className="mb-3">
-                        <Form.Label>Google Pay Link</Form.Label>
-                        <Form.Control type="url" name="googlePay" value={fundData.googlePay} onChange={handleInputChange} />
+                        <Form.Label>PayPal Email for donations</Form.Label>
+                        <Form.Control type="url" name="payPalEmail" value={fundData.payPalEmail} onChange={handleInputChange} />
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label>File (.jpg only)</Form.Label>

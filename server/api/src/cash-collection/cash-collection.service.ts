@@ -142,7 +142,7 @@ export class CashCollectionService {
             throw new ForbiddenException();
         }
 
-        if (collection.title && collection.text && collection.photo && collection.googlePay && collection.goal && collection.category){
+        if (collection.title && collection.text && collection.photo && collection.payPalEmail && collection.goal && collection.category){
             return this.databaseService.cashCollection.update({where: {id}, data: {publish: true}});
         }
         throw new ConflictException('To publish your fund, you must fill in all fields')
