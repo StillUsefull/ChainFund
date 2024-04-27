@@ -85,7 +85,7 @@ export function CreateFundForm() {
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label>PayPal Email for donations</Form.Label>
-                        <Form.Control type="url" name="payPalEmail" value={fundData.payPalEmail} onChange={handleInputChange} />
+                        <Form.Control type="email" name="payPalEmail" value={fundData.payPalEmail} onChange={handleInputChange} />
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label>File (.jpg only)</Form.Label>

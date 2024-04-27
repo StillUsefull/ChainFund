@@ -1,5 +1,5 @@
 import { CashCollection, Category } from "@prisma/client";
-import { IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl, MaxLength } from "class-validator";
+import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl, MaxLength } from "class-validator";
 
 
 export class UpdateCollectionDto {
@@ -18,7 +18,7 @@ export class UpdateCollectionDto {
     @IsOptional()
     category: Category;
 
-    @IsUrl()
+    @IsEmail()
     @IsOptional()
     payPalEmail: String;
 }
