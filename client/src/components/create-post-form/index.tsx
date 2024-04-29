@@ -38,7 +38,7 @@ export function CreatePostForm() {
         try {
             setLoading(true);
             
-            const response = await api.post('/post', formData, {
+            const response = await api.post('/post/create', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }

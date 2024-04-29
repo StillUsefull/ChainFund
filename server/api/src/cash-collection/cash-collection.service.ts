@@ -170,4 +170,12 @@ export class CashCollectionService {
             message: 'You promoted this fund'
         }
     }
+
+    async changeState(id, amount){
+        const collection = await this.findOne(id);
+        if (!collection){
+            throw new NotFoundException()
+        }
+        return this.databaseService.cashCollection.update({where: {id}, data: {state: collection.state + amount}})
+    }
 }
