@@ -1,39 +1,50 @@
 import { CashCollectionCard } from '@components/cash-collection-card';
 import { CreatorCard } from '@components/creator-card';
 import { CreatorForm } from '@components/creator-form';
+import api from '@utils/api';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useEffect, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 
 export function RootPage() {
-  const userMock = [
-    {
-      id: '1234',
-      name: 'Billy Herrington',
-      semi: 'Boss of The Gym',
-      photo: 'https://res.cloudinary.com/dldpvhtjt/image/upload/v1712313763/b6ub4ptxggrje31cfjpp.jpg'
-    },
-    {
-      id: '1234',
-      name: 'Billy Herrington',
-      semi: 'Boss of The Gym',
-      photo: 'https://res.cloudinary.com/dldpvhtjt/image/upload/v1712313763/b6ub4ptxggrje31cfjpp.jpg'
-    },
-    {
-      id: '1234',
-      name: 'Billy Herrington',
-      semi: 'Boss of The Gym',
-      photo: 'https://res.cloudinary.com/dldpvhtjt/image/upload/v1712313763/b6ub4ptxggrje31cfjpp.jpg'
-    },
-  ];
-
-  const cashMock = {
-    id: '1234',
-    title: 'Cash Collection',
-    description: 'sampleDescription',
-    goal: '1000000',
-    category: 'Health',
-    photo: 'https://res.cloudinary.com/dldpvhtjt/image/upload/v1712313763/b6ub4ptxggrje31cfjpp.jpg'
-  };
+    const [users, setUsers] = useState([]);
+    const [fund, setFund] = useState(
+      {
+        rating: []
+      }
+    );
+  
+    useEffect(() => {
+      
+      const fetchFunds = async () => {
+        try {
+          const response = await api.get(`/cash-collection?page=1&limit=10&sortBy=name&sortOrder=ASC`);
+          const funds = response.data.data; 
+          console.log(funds)
+          if (funds.length > 0) {
+            const highestRatedFund = funds.reduce((max, fund) => max.rating.length > fund.rating.length ? max : fund);
+            setFund(highestRatedFund);
+            
+          }
+        } catch (error) {
+          console.error('Failed to fetch funds', error);
+        }
+      };
+  
+      
+      const fetchUsers = async () => {
+        try {
+          const response = await api.get(`/user/random`);
+          console.log(response)
+          setUsers(response.data);
+        } catch (error) {
+          console.error('Failed to fetch users', error);
+        }
+      };
+  
+      fetchFunds();
+      fetchUsers();
+    }, []);
 
   return (
     <>
@@ -41,12 +52,8 @@ export function RootPage() {
         <Row>
           <Col md={4} className="p-3">
             <CashCollectionCard
-              id={cashMock.id}
-              title={cashMock.title}
-              description={cashMock.description}
-              goal={cashMock.goal}
-              category={cashMock.category}
-              photo={cashMock.photo}
+              fund={fund}
+              admin={false}
             />
           </Col>
           <Col md={6} className="p-3">
@@ -78,7 +85,7 @@ export function RootPage() {
           </Col>
           <Col md={8} className="p-3">
             <Row>
-              {userMock.map((user) => (
+              {users.map((user) => (
                 <Col md={4} key={user.id}>
                   <CreatorCard id={user.id} name={user.name} semi={user.semi} photo={user.photo}/>
                 </Col>

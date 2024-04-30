@@ -93,7 +93,7 @@ export function UpdateFundForm({ fundId }) {
             <ToastContainer />
             <Container style={{ marginTop: '20px', fontFamily: 'cursive' }}>
                 <h2>Update Fund</h2>
-                <CashCollectionCard id={fundId} title={fundData.title} description={fundData.text} goal={fundData.goal} category={categories[fundData.category]} photo={fundData.photo} admin={true}/>
+                <CashCollectionCard fund={fundData} admin={true}/>
                 <Form onSubmit={handleSubmit}>
                     <Form.Group className="mb-3">
                         <Form.Label>Title</Form.Label>

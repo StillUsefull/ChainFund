@@ -1,6 +1,6 @@
 import { ConflictException, ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from '@database/database.service';
-import { Role, User } from '@prisma/client';
+import { Prisma, Role, User } from '@prisma/client';
 import { compareSync, genSaltSync, hashSync } from 'bcrypt'
 import { JwtPayload } from '@auth/interfaces/JwtPayload';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
@@ -107,5 +107,9 @@ export class UserService {
                 password: this.hashPassword(dto.newPassword)
             }
         })
+    }
+
+    findRandomUsers(count = 3){
+        return this.databaseService.$queryRaw<User[]>`SELECT * FROM "User" ORDER BY RANDOM() LIMIT ${count}`;
     }
 }

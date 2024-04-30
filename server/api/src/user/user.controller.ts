@@ -10,6 +10,7 @@ import { multerOptions } from '@common/options/multer.option';
 import { CreateUserDto } from './dto/CreateUser.dto';
 import { RoleGuard } from '@auth/guards/role.guard';
 import { updatePasswordDto } from './dto/UpdatePassword.dto';
+import { PaginationInterceptor } from '@common/pagination/pagination.interceptor';
 
 
 @Controller('user')
@@ -18,6 +19,7 @@ export class UserController {
 
     @Public()
     @UseInterceptors(ClassSerializerInterceptor)
+    @UseInterceptors(PaginationInterceptor)
     @Get('all')
     async getAll(){
         const users = await this.userService.getAll()
@@ -32,6 +34,12 @@ export class UserController {
         return new GetUserDto(user)
     }
 
+    @Public()
+    @UseInterceptors(GetUserDto)
+    @Get('/random')
+    async randomUsers(){
+        return this.userService.findRandomUsers()
+    }
 
     @UseInterceptors(GetUserDto)
     @Delete("/delete/:id")

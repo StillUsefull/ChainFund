@@ -15,6 +15,7 @@ export function MyProfileSettingsPage() {
     const navigate = useNavigate()
     const handleDeleteProfile = async () => {
         try {
+            console.log(user.id)
             await api.delete(`/user/delete/${user.id}`);
             notifySuccess('Profile deleted successfully!');
             setIsLoggedIn(false); 

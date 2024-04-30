@@ -8,7 +8,7 @@ import { categories } from "@utils/consts/categories";
 import api from "@utils/api";
 
 export function FundPage() {
-    const [collections, setCollections] = useState([]);
+    const [funds, setFunds] = useState([]);
     const [hasMore, setHasMore] = useState(true);
     const [page, setPage] = useState(1);
     let { category } = useParams();
@@ -26,9 +26,9 @@ export function FundPage() {
 
             const response = await api.get(url);
             if (nextPage === 1) {
-                setCollections(response.data.data); 
+                setFunds(response.data.data); 
             } else {
-                setCollections(prev => [...prev, ...response.data.data]);
+                setFunds(prev => [...prev, ...response.data.data]);
             }
             setPage(nextPage + 1);
             if (nextPage >= response.data.totalPages) {
@@ -43,7 +43,7 @@ export function FundPage() {
         <>
             <Container style={{ width: '100%', padding: 0 }}>
                 <InfiniteScroll
-                    dataLength={collections.length}
+                    dataLength={funds.length}
                     next={() => loadMore(page)}
                     hasMore={hasMore}
                     loader={<></>}
@@ -53,15 +53,10 @@ export function FundPage() {
                         {category ? categories[category.toUpperCase()] : 'All Funds'}
                     </h2>
                     <Row className="g-2">
-                        {collections.map((collection, index) => (
+                        {funds.map((fund, index) => (
                             <Col key={index} md={6} className="mb-4">
                                 <CashCollectionCard
-                                    id={collection.id}
-                                    title={collection.title}
-                                    description={collection.description}
-                                    goal={collection.goal}
-                                    category={collection.category}
-                                    photo={collection.photo}
+                                    fund={fund}
                                     admin={false}
                                 />
                             </Col>

@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios'; 
+import api from './api';
 
 const AuthContext = createContext(null);
 
@@ -9,11 +10,11 @@ export const AuthProvider = ({ children }) => {
 
     const fetchUser = async () => {
         try {
-            const response = await axios.get('/users/iam', {
+            const response = await api.get('/user/iam', {
                 headers: {
                     Authorization: `${localStorage.getItem('accessToken')}`
                 }
-            });
+            })
             setUser({
                 id: response.data.id,
                 role: response.data.role
@@ -37,6 +38,8 @@ export const AuthProvider = ({ children }) => {
             fetchUser();
         }
     }, []);
+
+    
 
     return (
         <AuthContext.Provider value={{ isLoggedIn, user, setIsLoggedIn, fetchUser, clearUser }}>

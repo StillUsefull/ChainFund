@@ -1,7 +1,9 @@
+import { notifySuccess } from "@components/notifications";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 import api from "@utils/api";
+import { useAuth } from "@utils/auth";
 import { useState, useEffect } from "react";
-import { Col, Form, Row } from "react-bootstrap";
+import { Alert, Col, Form, Row } from "react-bootstrap";
 import { ToastContainer } from "react-toastify";
 
 export function PayButton({ fundId, receiverEmail}) {
@@ -12,7 +14,7 @@ export function PayButton({ fundId, receiverEmail}) {
     };
     const [amount, setAmount] = useState(0);
     const [showButtons, setShowButtons] = useState(false);
-
+    const { user } = useAuth(); 
     useEffect(() => {
         if (amount > 0) {
             setShowButtons(true);
@@ -24,6 +26,7 @@ export function PayButton({ fundId, receiverEmail}) {
     const handleApprove = async (details) => {
         console.log('Transaction details:', details);
         await api.post(`/transaction/payout/${fundId}`, { amount: amount.toFixed(2) });
+        notifySuccess('Thanks for your donation');
     };
 
     const createOrder = (data, actions) => {
@@ -44,6 +47,16 @@ export function PayButton({ fundId, receiverEmail}) {
             }
         });
     };
+
+
+    if (!user) {
+        
+        return (
+            <Alert variant="warning" style={{fontSize: '25px'}}>
+                Only logged in users can make donations.
+            </Alert>
+        );
+    }
 
     return (
         <>  

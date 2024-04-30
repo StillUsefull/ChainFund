@@ -23,13 +23,15 @@ export class PaginationInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       map(data => {
-        const responseData = data.data || data;
-        const total = data.total;
-        const pageCount = Math.ceil(total / limit);
-
+        const responseData = data.data || data.items || data; 
+        const total = data.total; 
+        let totalPages = Math.ceil(total / limit);
+        if (!totalPages || totalPages < 1) {
+          totalPages = 1;
+        }
         return {
           page,
-          pageCount,
+          totalPages, 
           limit,
           total,
           data: this.sortAndPaginate(responseData, options)
