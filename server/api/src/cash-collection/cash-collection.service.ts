@@ -178,4 +178,13 @@ export class CashCollectionService {
         }
         return this.databaseService.cashCollection.update({where: {id}, data: {state: collection.state + amount}})
     }
+
+    async getByCreator(id: string){
+        return this.databaseService.cashCollection.findMany({
+            where: {
+                authorId: id,
+                publish: true
+            }
+        })
+    }
 }

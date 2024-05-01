@@ -7,7 +7,7 @@ export function CreatorCard({ id, name, semi, photo }) {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/profile/${id}`);
+    navigate(`/creator/${id}`);
   };
 
   return (

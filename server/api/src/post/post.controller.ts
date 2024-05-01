@@ -8,6 +8,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from '@common/options/multer.option';
 import { RoleGuard } from '@auth/guards/role.guard';
 import { Role } from '@prisma/client';
+import { PaginationInterceptor } from '@common/pagination/pagination.interceptor';
 
 
 @Controller('post')
@@ -15,11 +16,13 @@ export class PostController {
     constructor(private readonly postService: PostService){}
 
     @Public()
+    @UseInterceptors(PaginationInterceptor)
     @Get()
     getAll(){
         return this.postService.getAll()
     }
 
+    @Public()
     @Get('/findOne/:id')
     findOne(@Param('id') id: string){
         return this.postService.findOne(id);
@@ -65,5 +68,12 @@ export class PostController {
     @Roles(Role.ADMIN)
     getMy(@UserDecorator() user: JwtPayload){
         return this.postService.getMyPosts(user)
+    }
+
+
+    @Public()
+    @Get('/byCreator/:id')
+    getByCreator(@Param('id') id: string){
+        return this.postService.getByCreator(id)
     }
 }

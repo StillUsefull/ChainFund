@@ -11,7 +11,7 @@ export class PostService {
     constructor(private readonly databaseService: DatabaseService, private readonly photoService: PhotoService){}
 
     async getAll(){
-        return this.databaseService.post.findMany()
+        return this.databaseService.post.findMany({where: {publish: true}})
     }
 
     async findOne(id: string){
@@ -87,5 +87,14 @@ export class PostService {
 
     async getMyPosts(user: JwtPayload){
         return this.databaseService.post.findMany({where: {authorId: user.id}})
+    }
+
+    getByCreator(id: string){
+        return this.databaseService.post.findMany({
+            where: {
+                authorId: id,
+                publish: true
+            }
+        })
     }
 }

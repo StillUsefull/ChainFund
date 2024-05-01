@@ -1,160 +1,33 @@
 import { BlogCard } from '@components/blog-card';
-import { useState, useEffect } from 'react';
+import api from '@utils/api';
+import { useState, useEffect, useCallback } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-
 
 export function BlogPage() {
   const [posts, setPosts] = useState([]);
   const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(0);
 
-  
-  const fetchPosts = async () => {
+  const fetchPosts = useCallback(async () => {
     try {
-      
-    //  const nextPage = posts.length / 10 + 1;
-    //   const response = await fetch(`https://example.com/api/posts?page=${nextPage}`);
-    //   const newPosts = await response.json();
-    const newPosts = [
-        {
-            id: "1",
-            title: "Post Title 1",
-            text: "This is a sample text for post 1, containing enough details to be truncated in the UI display. This is a sample text for post 1, containing enough details to be truncated in the UI display. This is a sample text for post 1, containing enough details to be truncated in the UI display. This is a sample text for post 1, containing enough details to be truncated in the UI display.",
-            socialLink: "https://google.com",
-            photo: "https://res.cloudinary.com/dldpvhtjt/image/upload/v1712313763/yowwspibhepn3u1xo6o8.jpg"
-        },
-        {
-            id: "2",
-            title: "Post Title 2",
-            text: "This is a sample text for post 2, containing enough details to be truncated in the UI display.",
-            socialLink: "https://social-link.com/post2",
-            photo: "https://res.cloudinary.com/dldpvhtjt/image/upload/v1712313763/yowwspibhepn3u1xo6o8.jpg"
-        },
-        {
-            id: "3",
-            title: "Post Title 3",
-            text: "This is a sample text for post 3, containing enough details to be truncated in the UI display.",
-            socialLink: "https://social-link.com/post3",
-            photo: "https://res.cloudinary.com/dldpvhtjt/image/upload/v1712313763/yowwspibhepn3u1xo6o8.jpg"
-        },
-        {
-            id: "1",
-            title: "Post Title 1",
-            text: "This is a sample text for post 1, containing enough details to be truncated in the UI display.",
-            socialLink: "https://social-link.com/post1",
-            photo: "https://res.cloudinary.com/dldpvhtjt/image/upload/v1712313763/yowwspibhepn3u1xo6o8.jpg"
-        },
-        {
-            id: "2",
-            title: "Post Title 2",
-            text: "This is a sample text for post 2, containing enough details to be truncated in the UI display.",
-            socialLink: "https://social-link.com/post2",
-            photo: "https://res.cloudinary.com/dldpvhtjt/image/upload/v1712313763/yowwspibhepn3u1xo6o8.jpg"
-        },
-        {
-            id: "3",
-            title: "Post Title 3",
-            text: "This is a sample text for post 3, containing enough details to be truncated in the UI display.",
-            socialLink: "https://social-link.com/post3",
-            photo: "https://res.cloudinary.com/dldpvhtjt/image/upload/v1712313763/yowwspibhepn3u1xo6o8.jpg"
-        },
-        {
-            id: "1",
-            title: "Post Title 1",
-            text: "This is a sample text for post 1, containing enough details to be truncated in the UI display.",
-            socialLink: "https://social-link.com/post1",
-            photo: "https://res.cloudinary.com/dldpvhtjt/image/upload/v1712313763/yowwspibhepn3u1xo6o8.jpg"
-        },
-        {
-            id: "2",
-            title: "Post Title 2",
-            text: "This is a sample text for post 2, containing enough details to be truncated in the UI display.",
-            socialLink: "https://social-link.com/post2",
-            photo: "https://res.cloudinary.com/dldpvhtjt/image/upload/v1712313763/yowwspibhepn3u1xo6o8.jpg"
-        },
-        {
-            id: "3",
-            title: "Post Title 3",
-            text: "This is a sample text for post 3, containing enough details to be truncated in the UI display.",
-            socialLink: "https://social-link.com/post3",
-            photo: "https://res.cloudinary.com/dldpvhtjt/image/upload/v1712313763/yowwspibhepn3u1xo6o8.jpg"
-        },
-        {
-            id: "1",
-            title: "Post Title 1",
-            text: "This is a sample text for post 1, containing enough details to be truncated in the UI display.",
-            socialLink: "https://social-link.com/post1",
-            photo: "https://res.cloudinary.com/dldpvhtjt/image/upload/v1712313763/yowwspibhepn3u1xo6o8.jpg"
-        },
-        {
-            id: "2",
-            title: "Post Title 2",
-            text: "This is a sample text for post 2, containing enough details to be truncated in the UI display.",
-            socialLink: "https://social-link.com/post2",
-            photo: "https://res.cloudinary.com/dldpvhtjt/image/upload/v1712313763/yowwspibhepn3u1xo6o8.jpg"
-        },
-        {
-            id: "3",
-            title: "Post Title 3",
-            text: "This is a sample text for post 3, containing enough details to be truncated in the UI display.",
-            socialLink: "https://social-link.com/post3",
-            photo: "https://res.cloudinary.com/dldpvhtjt/image/upload/v1712313763/yowwspibhepn3u1xo6o8.jpg"
-        },
-        {
-            id: "1",
-            title: "Post Title 1",
-            text: "This is a sample text for post 1, containing enough details to be truncated in the UI display.",
-            socialLink: "https://social-link.com/post1",
-            photo: "https://res.cloudinary.com/dldpvhtjt/image/upload/v1712313763/yowwspibhepn3u1xo6o8.jpg"
-        },
-        {
-            id: "2",
-            title: "Post Title 2",
-            text: "This is a sample text for post 2, containing enough details to be truncated in the UI display.",
-            socialLink: "https://social-link.com/post2",
-            photo: "https://res.cloudinary.com/dldpvhtjt/image/upload/v1712313763/yowwspibhepn3u1xo6o8.jpg"
-        },
-        {
-            id: "3",
-            title: "Post Title 3",
-            text: "This is a sample text for post 3, containing enough details to be truncated in the UI display.",
-            socialLink: "https://social-link.com/post3",
-            photo: "https://res.cloudinary.com/dldpvhtjt/image/upload/v1712313763/yowwspibhepn3u1xo6o8.jpg"
-        },
-        {
-            id: "1",
-            title: "Post Title 1",
-            text: "This is a sample text for post 1, containing enough details to be truncated in the UI display.",
-            socialLink: "https://social-link.com/post1",
-            photo: "https://res.cloudinary.com/dldpvhtjt/image/upload/v1712313763/yowwspibhepn3u1xo6o8.jpg"
-        },
-        {
-            id: "2",
-            title: "Post Title 2",
-            text: "This is a sample text for post 2, containing enough details to be truncated in the UI display.",
-            socialLink: "https://social-link.com/post2",
-            photo: "https://res.cloudinary.com/dldpvhtjt/image/upload/v1712313763/yowwspibhepn3u1xo6o8.jpg"
-        },
-        {
-            id: "3",
-            title: "Post Title 3",
-            text: "This is a sample text for post 3, containing enough details to be truncated in the UI display.",
-            socialLink: "https://social-link.com/post3",
-            photo: "https://res.cloudinary.com/dldpvhtjt/image/upload/v1712313763/yowwspibhepn3u1xo6o8.jpg"
-        },
-        
-    ];
-      setPosts((prevPosts) => [...prevPosts, ...newPosts]);
-      setHasMore(newPosts.length > 0);
+      const response = await api.get(`/post?page=${page}&limit=10&sortBy=name&sortOrder=ASC`);
+      const newPosts = response.data.data;
+
+      setPosts(prevPosts => {
+        const updatedPosts = newPosts.filter(newPost => !prevPosts.find(post => post.id === newPost.id));
+        return [...prevPosts, ...updatedPosts];
+      });
+      setHasMore(newPosts.length === 10);
+      setPage(prevPage => prevPage + 1); 
     } catch (error) {
       console.error('Failed to fetch posts:', error);
-      setHasMore(false); 
+      setHasMore(false);
     }
-  };
+  }, [page]);  
 
-  
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [fetchPosts]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -167,7 +40,7 @@ export function BlogPage() {
       >
         {posts.map((post) => (
           <div key={post.id} style={{ width: '100%', padding: '40px' }}>
-            <BlogCard post={post} />
+            <BlogCard post={post} admin={false}/>
           </div>
         ))}
       </InfiniteScroll>

@@ -24,7 +24,7 @@ export function MyDonationsPage(){
                             <DonationCard key={transaction.id} fundId={transaction.cashCollectionId} amount={transaction.amount} />
                         ))
                     ) : (
-                        <p>You haven't supported any fund yet.</p>
+                        <p style={{fontFamily: 'cursive', fontSize: '40px', color: '#0054E7', textAlign: 'center'}}>You haven't supported any fund yet.</p>
                     )}
             </Container>
         </div>

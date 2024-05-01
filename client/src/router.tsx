@@ -15,6 +15,8 @@ import { HelpProfilePage } from "@routes/help-profile-page";
 import { UpdateFundPage } from "@routes/my-funds-update-page";
 import { UpdatePostPage } from "@routes/my-posts-update-page";
 import { OneFundPage } from "@routes/one-fund-page";
+import { OneBlogPage } from "@routes/one-blog-page";
+import { OneCreatorPage } from "@routes/one-creator-page";
 
 
 
@@ -45,8 +47,16 @@ export const router = createBrowserRouter([
     errorElement: <ErrorPage />
   },
   {
+    path: "/creator/:id",
+    element: <OneCreatorPage />
+  },
+  {
     path: "/blog",
     element: <BlogPage />
+  },
+  {
+    path: "/blog/one/:id",
+    element: <OneBlogPage />
   },
   {
     path: "/help",

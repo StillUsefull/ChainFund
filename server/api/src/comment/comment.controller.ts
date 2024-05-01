@@ -1,6 +1,6 @@
-import { Body, Controller, Delete, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { CommentService } from './comment.service';
-import { UserDecorator } from '@common/decorators';
+import { Public, UserDecorator } from '@common/decorators';
 import { JwtPayload } from '@auth/interfaces/JwtPayload';
 
 @Controller('comment')
@@ -20,5 +20,11 @@ export class CommentController {
     @Post()
     create(@Body() body, @UserDecorator() user: JwtPayload){
         return this.commentService.create(body.text, user, body.fund)
+    }
+
+    @Public()
+    @Get('/:id')
+    getByCashCollection(@Param('id') id: string){
+        return this.commentService.getById(id);
     }
 }

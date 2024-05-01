@@ -63,6 +63,7 @@ model Post {
   photo      String?
   publish    Boolean @default(false)
   archived   Boolean @default(false)
+  comments   Comment[] 
   author     User?    @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId   String?
   createdAt  DateTime @default(now())
@@ -81,7 +82,6 @@ model CashCollection {
   text         String?
   payPalEmail  String?
   category     Category 
-  comments     Comment[] 
   transactions Transaction[]
   publish      Boolean @default(false)
   achieved     Boolean @default(false)
@@ -106,8 +106,8 @@ model Comment {
   author        User @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId      String
   text          String
-  collection    CashCollection @relation(fields: [collectionId], references: [id])
-  collectionId  String
+  post          Post @relation(fields: [postId], references: [id])
+  postId        String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }

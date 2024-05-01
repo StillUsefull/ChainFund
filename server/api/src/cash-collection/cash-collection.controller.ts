@@ -93,4 +93,10 @@ export class CashCollectionController {
         return this.cashCollectionService.promote(id, user)
     }
 
+    @Public()
+    @Get('/byCreator/:id')
+    getByCreator(@Param('id') id: string){
+        return this.cashCollectionService.getByCreator(id)
+    }
+
 }
