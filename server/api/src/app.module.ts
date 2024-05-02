@@ -8,9 +8,30 @@ import { TransactionModule } from './transaction/transaction.module';
 import { PostModule } from './post/post.module';
 import { PhotoModule } from './photo/photo.module';
 import { CommentModule } from './comment/comment.module';
+import { RequestModule } from './request/request.module';
+import { HelpRequestModule } from './help-request/help-request.module';
+import { MailModule } from './mail/mail.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
-  imports: [UserModule, AuthModule, AuthModule, ConfigModule.forRoot({isGlobal: true}), CashCollectionModule, TransactionModule, PostModule, PhotoModule, CommentModule],
+  imports: [
+            UserModule, 
+            AuthModule, 
+            AuthModule, 
+            ConfigModule.forRoot({isGlobal: true}), 
+            CashCollectionModule, 
+            TransactionModule, 
+            PostModule, 
+            PhotoModule, 
+            CommentModule, 
+            RequestModule, 
+            HelpRequestModule, 
+            MailModule,
+            ThrottlerModule.forRoot([{
+              ttl: 6000,
+              limit: 20
+            }])
+          ],
   controllers: [],
   providers: [
     {

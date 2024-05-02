@@ -18,6 +18,8 @@ export class GetUserDto implements User {
 
     role: Role;
 
+    about: string;
+
     @Exclude()
     Token: Token[];
 

@@ -5,7 +5,6 @@ import { Card, Row, Col, Image, Container } from "react-bootstrap";
 import { BlogCard } from "@components/blog-card";
 import { CashCollectionCard } from "@components/cash-collection-card";
 
-
 export function OneCreatorPage() {
     const { id } = useParams();
     const [creator, setCreator] = useState(null);
@@ -49,6 +48,7 @@ export function OneCreatorPage() {
                             <Col md={8}>
                                 <h3>{creator.name}</h3>
                                 <p>{creator.semi}</p>
+                                {creator.about && <p>About: {creator.about}</p>}
                                 <p>Telegram: {creator.telegram}</p>
                             </Col>
                         </Row>
@@ -58,15 +58,19 @@ export function OneCreatorPage() {
             <Row>
                 <Col md={6}>
                     <h4 style={{fontFamily: 'cursive'}}>Posts</h4>
-                    {posts.map(post => (
-                        <BlogCard key={post.id} post={post} admin={false}/>
-                    ))}
+                    {posts.length > 0 ? (
+                        posts.map(post => <BlogCard key={post.id} post={post} admin={false}/>)
+                    ) : (
+                        <p>No posts available.</p>
+                    )}
                 </Col>
                 <Col md={6}>
                     <h4 style={{fontFamily: 'cursive'}}>Collections</h4>
-                    {collections.map(collection => (
-                        <CashCollectionCard key={collection.id} fund={collection} admin={false}/>
-                    ))}
+                    {collections.length > 0 ? (
+                        collections.map(collection => <CashCollectionCard key={collection.id} fund={collection} admin={false}/>)
+                    ) : (
+                        <p>No collections available.</p>
+                    )}
                 </Col>
             </Row>
         </Container>

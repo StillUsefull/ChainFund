@@ -12,6 +12,7 @@ type User = {
     semi: string;
     telegram: string;
     photo: string;
+    about: string;
 };
 
 type UserUpdates = Partial<Omit<User, 'id'>>; 
@@ -23,6 +24,7 @@ export function UpdateUserForm() {
         name: '',
         semi: '',
         telegram: '',
+        about: '',
         photo: ''
     });
     const [userUpdates, setUserUpdates] = useState<UserUpdates>({});
@@ -34,8 +36,8 @@ export function UpdateUserForm() {
             try {
                 setLoading(true);
                 const response = await api.get('/user/iam');
-                const { id, email, name, semi, telegram, photo } = response.data;
-                setUserData({ id, email, name, semi, telegram, photo });
+                const { id, email, name, semi, telegram, photo, about } = response.data;
+                setUserData({ id, email, name, semi, telegram, photo, about });
                 setUserUpdates({});
                 setLoading(false);
             } catch (err) {
@@ -97,8 +99,12 @@ export function UpdateUserForm() {
                         <Form.Control type="text" name="name" defaultValue={userData.name} onChange={handleInputChange} />
                     </Form.Group>
                     <Form.Group className="mb-3">
-                        <Form.Label>Semi-name</Form.Label>
+                        <Form.Label>Semi-name (your type of activity)</Form.Label>
                         <Form.Control type="text" name="semi" defaultValue={userData.semi} onChange={handleInputChange} />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label>About (a few words about you)</Form.Label>
+                        <Form.Control type="text" name="about" defaultValue={userData.about} onChange={handleInputChange} />
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label>Telegram</Form.Label>

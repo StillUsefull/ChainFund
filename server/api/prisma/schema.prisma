@@ -34,6 +34,7 @@ model User {
   password    String
   name        String
   semi        String?
+  about       String?
   telegram    String?
   photo       String?
   role        Role     @default(USER)
@@ -42,6 +43,7 @@ model User {
   posts       Post[] 
   collections CashCollection[] 
   comments    Comment[]
+  requests    HelpRequest[]
   createdAt   DateTime @default(now())
 }
 
@@ -110,4 +112,23 @@ model Comment {
   postId        String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+}
+
+
+model Request {
+  id        String @id @default(uuid())
+  name      String
+  email     String
+  interests String
+  category  String
+}
+
+
+model HelpRequest {
+  id        String @id @default(uuid())
+  user      User @relation(fields: [userId], references: [id])
+  userId    String
+  title     String
+  text      String
+  answer    String @default("")
 }

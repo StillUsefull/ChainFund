@@ -22,4 +22,9 @@ export class UpdateUserDto {
     @IsOptional()
     telegram?: string;
 
+
+    @IsString()
+    @IsOptional()
+    @MaxLength(3000)
+    about: string;
 }
