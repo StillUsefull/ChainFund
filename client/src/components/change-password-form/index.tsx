@@ -36,7 +36,8 @@ export function ChangePasswordForm() {
             setLoading(false);
             notifySuccess('Password changed successfully!');
         } catch (err) {
-            notifyError('Failed to change password');
+            console.log(err)
+            notifyError(err.data.message);
             setLoading(false);
         }
     };

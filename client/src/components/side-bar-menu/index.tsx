@@ -52,8 +52,8 @@ function SidebarMenu() {
           <>
             <Nav.Link href="/profile/settings" eventKey="/profile/settings">Profile Settings</Nav.Link>
             <Nav.Link href="/profile/donations" eventKey="/profile/donations">Donations</Nav.Link>
-            <Nav.Link href="/super/feature1" eventKey="/super/feature1">Super Feature 1</Nav.Link>
-            <Nav.Link href="/super/feature2" eventKey="/super/feature2">Super Feature 2</Nav.Link>
+            <Nav.Link href="/super/help-requests" eventKey="/super/help-requests">Help requests</Nav.Link>
+            <Nav.Link href="/super/creator-requests" eventKey="/super/creator-requests">Creator requests</Nav.Link>
           </>
         )}
       </Nav>

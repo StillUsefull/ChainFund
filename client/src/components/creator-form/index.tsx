@@ -1,11 +1,14 @@
+import { notifyError, notifySuccess } from '@components/notifications';
+import api from '@utils/api';
 import { useState } from 'react';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
+import { ToastContainer } from 'react-toastify';
 
 export function CreatorForm() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    description: '',
+    interests: '',
     category: ''
   });
 
@@ -31,9 +34,9 @@ export function CreatorForm() {
     }
 
     
-    if (!formData.description) {
+    if (!formData.interests) {
       valid = false;
-      newErrors.description = 'Description is required.';
+      newErrors.interests = 'Interest is required.';
     }
 
     
@@ -49,8 +52,14 @@ export function CreatorForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      console.log('Form Data:', formData);
-      alert('Application sent!');
+      api.post('/request/create', formData)
+        .then(() => {
+          notifySuccess('Your request was sent')
+        })
+        .catch(() => {
+          console.log(formData)
+          notifyError('Error sending request')
+        })
     }
   };
 
@@ -63,7 +72,9 @@ export function CreatorForm() {
   };
 
   return (
-    <Container style={{color: '#2B3EFF', fontFamily: 'cursive', marginBottom: '20px'}}>
+    <>
+    <ToastContainer />
+      <Container style={{color: '#2B3EFF', fontFamily: 'cursive', marginBottom: '20px'}}>
       <Row className="justify-content-md-center">
         <Col md={6}>
           <Form noValidate onSubmit={handleSubmit}>
@@ -97,12 +108,12 @@ export function CreatorForm() {
               <Form.Control
                 as="textarea"
                 rows={3}
-                name="description"
-                value={formData.description}
+                name="interests"
+                value={formData.interests}
                 onChange={handleChange}
-                isInvalid={!!errors.description}
+                isInvalid={!!errors.interests}
               />
-              <Form.Control.Feedback type="invalid">{errors.description}</Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">{errors.interests}</Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group className="mb-3">
@@ -124,5 +135,7 @@ export function CreatorForm() {
         </Col>
       </Row>
     </Container>
+    </>
+    
   );
 }

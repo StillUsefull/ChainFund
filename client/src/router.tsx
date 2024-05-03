@@ -11,12 +11,15 @@ import { MyProfileSettingsPage } from "@routes/my-profile-settings-page";
 import { MyFundsPage } from "@routes/my-funds-page";
 import { MyPostsPage } from "@routes/my-posts-page";
 import { MyDonationsPage } from "@routes/my-donations-page";
-import { HelpProfilePage } from "@routes/help-profile-page";
+import { HelpProfilePage } from "@routes/my-help-profile-page";
 import { UpdateFundPage } from "@routes/my-funds-update-page";
 import { UpdatePostPage } from "@routes/my-posts-update-page";
 import { OneFundPage } from "@routes/one-fund-page";
 import { OneBlogPage } from "@routes/one-blog-page";
 import { OneCreatorPage } from "@routes/one-creator-page";
+import { AdminHelpPage } from "@routes/admin-help-page";
+import { AdminHelpOnePage } from "@routes/admin-help-one-page";
+import { AdminCreatorPage } from "@routes/admin-creator-page";
 
 
 
@@ -98,4 +101,16 @@ export const router = createBrowserRouter([
     path: '/profile/help',
     element: <HelpProfilePage />
   },
+  {
+    path: '/super/help-requests',
+    element: <AdminHelpPage />
+  },
+  {
+    path: '/admin/help/:id',
+    element: <AdminHelpOnePage />
+  },
+  {
+    path: '/super/creator-requests',
+    element: <AdminCreatorPage />
+  }
 ]);

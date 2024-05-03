@@ -8,8 +8,7 @@ import { useNavigate } from 'react-router';
 
 
 export function CreatePostForm() {
-    const [fundData, setFundData]: [any, any] = useState({
-    });
+    const [fundData, setFundData]: [any, any] = useState({});
     const [loading, setLoading] = useState(false);
     const [file, setFile] = useState<File | null>(null);
     const navigate = useNavigate();

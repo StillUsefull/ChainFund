@@ -21,7 +21,7 @@ export class RequestController {
 
     @UseGuards(RoleGuard)
     @Roles(Role.SUPER)
-    @Put('/aprove/:id')
+    @Put('/approve/:id')
     approve(@Param('id') id: string){
         return this.requestService.approve(id);
     }

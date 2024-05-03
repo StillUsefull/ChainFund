@@ -64,7 +64,9 @@ export class PostService {
         if (user.id !== post.authorId && user.role !== Role.SUPER){
             throw new ForbiddenException();
         }
-        await this.photoService.deletePhotoByUrl(post.photo);
+        if (post.photo){
+            await this.photoService.deletePhotoByUrl(post.photo);
+        }
         return this.databaseService.post.delete({where: {id}})
     }
 
