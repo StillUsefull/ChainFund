@@ -1,4 +1,4 @@
-import { Button, Card } from "react-bootstrap";
+import {  Card } from "react-bootstrap";
 import React from "react";
 
 export function HelpRequestCard({ card }: { card: { title: string; text: string; answer?: string } }) {
@@ -6,12 +6,12 @@ export function HelpRequestCard({ card }: { card: { title: string; text: string;
         width: '300px',
         height: 'auto',
         backgroundColor: card.answer ? '#16F700' : '#FFFFFF',
-        display: 'flex',  // Adjust to flex layout for side-by-side display
-        alignItems: 'center' // Align items vertically
+        display: 'flex',  
+        alignItems: 'center' 
     };
 
     const contentStyle: React.CSSProperties = {
-        flex: 1, // Takes up the remaining space
+        flex: 1, 
         padding: '10px'
     };
 
@@ -19,7 +19,7 @@ export function HelpRequestCard({ card }: { card: { title: string; text: string;
         backgroundColor: 'rgba(0, 0, 0, 0.8)',
         color: 'white',
         padding: '10px',
-        minWidth: '100px', // Ensure minimum width for the answer section
+        minWidth: '100px', 
         textAlign: 'center'
     };
 
