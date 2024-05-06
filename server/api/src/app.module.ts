@@ -12,6 +12,7 @@ import { RequestModule } from './request/request.module';
 import { HelpRequestModule } from './help-request/help-request.module';
 import { MailModule } from './mail/mail.module';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { SchedulerModule } from './scheduler/scheduler.module';
 
 @Module({
   imports: [
@@ -30,7 +31,8 @@ import { ThrottlerModule } from '@nestjs/throttler';
             ThrottlerModule.forRoot([{
               ttl: 6000,
               limit: 20
-            }])
+            }]),
+            SchedulerModule
           ],
   controllers: [],
   providers: [

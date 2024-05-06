@@ -3,28 +3,21 @@ import { Col, Container, Row, Alert } from "react-bootstrap";
 import { CashCollectionCard } from "@components/cash-collection-card";
 import { CreatorForm } from "@components/creator-form";
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { useParams } from "react-router";
-import { categories } from "@utils/consts/categories";
 import api from "@utils/api";
 
-export function FundPage() {
+export function FundsAchievedPage() {
     const [funds, setFunds] = useState([]);
     const [hasMore, setHasMore] = useState(true);
     const [page, setPage] = useState(1);
-    const { category } = useParams();
 
     useEffect(() => {
         loadMore(1); 
-    }, [category]);
+    }, []);
 
     const loadMore = async (nextPage) => {
         try {
             const limit = 10;
-            const url = category ?
-                `/cash-collection/category/${category.toUpperCase()}?page=${nextPage}&limit=${limit}&sortBy=name&sortOrder=ASC` :
-                `/cash-collection?page=${nextPage}&limit=${limit}&sortBy=name&sortOrder=ASC`;
-
-            const response = await api.get(url);
+            const response = await api.get(`/cash-collection/archive?page=${nextPage}&limit=${limit}&sortBy=name&sortOrder=ASC`);
             if (nextPage === 1) {
                 setFunds(response.data.data); 
             } else {
@@ -43,7 +36,7 @@ export function FundPage() {
         <>
             <Container style={{ width: '100%', padding: 0 }}>
                 <h2 style={{ color: '#2B3EFF', fontFamily: 'cursive', textAlign: 'center', fontSize: '80px', margin: '15px' }}>
-                    {category ? categories[category.toUpperCase()] : 'All Funds'}
+                    Achieved Funds
                 </h2>
                 {funds.length > 0 ? (
                     <InfiniteScroll
@@ -66,7 +59,7 @@ export function FundPage() {
                     </InfiniteScroll>
                 ) : (
                     <Alert variant="info" style={{ textAlign: 'center' }}>
-                        No funds available in this category.
+                        No funds have been ended yet.
                     </Alert>
                 )}
             </Container>

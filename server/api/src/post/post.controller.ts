@@ -18,6 +18,14 @@ export class PostController {
     @Public()
     @UseInterceptors(PaginationInterceptor)
     @Get()
+    getPublish(){
+        return this.postService.getPublish()
+    }
+
+    @UseGuards(RoleGuard)
+    @Roles(Role.SUPER)
+    @UseInterceptors(PaginationInterceptor)
+    @Get('all')
     getAll(){
         return this.postService.getAll()
     }

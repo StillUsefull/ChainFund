@@ -11,19 +11,28 @@ import { CreateUserDto } from './dto/CreateUser.dto';
 import { RoleGuard } from '@auth/guards/role.guard';
 import { updatePasswordDto } from './dto/UpdatePassword.dto';
 import { PaginationInterceptor } from '@common/pagination/pagination.interceptor';
+import { Throttle } from '@nestjs/throttler';
 
 
 @Controller('user')
 export class UserController {
     constructor( private readonly userService: UserService){}
 
-    @Public()
+    
     @UseInterceptors(ClassSerializerInterceptor)
-    @UseInterceptors(PaginationInterceptor)
     @Get('all')
     async getAll(){
         const users = await this.userService.getAll()
         return users.map((user) => new GetUserDto(user))
+    }
+
+    @Public()
+    @UseInterceptors(ClassSerializerInterceptor)
+    @UseInterceptors(PaginationInterceptor)
+    @Get('/creators')
+    async getCreators(){
+        const creators = await this.userService.getCreators();
+        return creators.map((creator) => new GetUserDto(creator))
     }
 
     @Public()
@@ -72,6 +81,13 @@ export class UserController {
     @Roles(Role.SUPER)
     async createAdmin(@Body() dto: CreateUserDto){
         return this.createAdmin(dto);
+    }
+
+    @Throttle({default: {limit: 3, ttl: 60000}})
+    @Public()
+    @Post('/password-recovery')
+    passwordRecovery(@Body('email') email: string){
+        return this.userService.passwordRecovery(email)
     }
 }
 

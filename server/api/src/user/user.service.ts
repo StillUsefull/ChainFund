@@ -10,10 +10,12 @@ import { UpdateUserDto } from './dto/UpdateUser.dto';
 import { PhotoService } from 'src/photo/photo.service';
 import { CreateUserDto } from './dto/CreateUser.dto';
 import { updatePasswordDto } from './dto/UpdatePassword.dto';
+import { MailService } from 'src/mail/mail.service';
 @Injectable()
 export class UserService {
     constructor(private readonly databaseService: DatabaseService,
-                private readonly photoService: PhotoService
+                private readonly photoService: PhotoService,
+                private readonly mailService: MailService
     ){}
 
     async create(dto: CreateUserDto, role?: Role){
@@ -39,6 +41,10 @@ export class UserService {
 
     async getAll(){
         return this.databaseService.user.findMany();
+    }
+
+    getCreators(){
+        return this.databaseService.user.findMany({where: {role: Role.ADMIN}});
     }
 
     async findOne(id: string) {
@@ -110,6 +116,24 @@ export class UserService {
     }
 
     findRandomUsers(count = 3){
-        return this.databaseService.$queryRaw<User[]>`SELECT * FROM "User" ORDER BY RANDOM() LIMIT ${count}`;
+        return this.databaseService.$queryRaw<User[]>`SELECT * FROM "User" WHERE role = 'ADMIN' ORDER BY RANDOM() LIMIT ${count}`;
+    }
+
+    async passwordRecovery(email: string){
+        const user = await this.databaseService.user.findUnique({where: {email}});
+        if (!user){
+            throw new ConflictException('Can not find user with this email');
+        }
+        const password = Math.random().toString(36).slice(-8);
+        await this.mailService.sendRecoveryPassword(email, password);
+        const hashedPassword = this.hashPassword(password);
+        await this.databaseService.user.update({
+            where: {
+                email
+            }, 
+            data: {
+                password: hashedPassword
+            }
+        })
     }
 }

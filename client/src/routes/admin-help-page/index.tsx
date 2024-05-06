@@ -15,19 +15,19 @@ export function AdminHelpPage(){
             .then((response) => {
                 setRequests(response.data);
             })
-    })
+    }, [])
 
     return (
         <div>
             <SidebarMenu />
             <Container style={{ marginLeft: '250px', padding: '20px' }}>
-            {requests ? (requests.map((request, index) => {
+            {(requests.length > 0) ? (requests.map((request, index) => {
                 return (<div style={{marginTop: "20px", fontFamily: "cursive"}}>
                     <HelpRequestCard key={index} card={request} />
                 </div>)}))
                 :
-                <p style={{fontFamily: 'cursive'}}>
-                    There is no requests for help now!
+                <p style={{fontFamily: 'cursive', textAlign: 'center', marginTop: '20px', fontSize: '25px' }}>
+                    No requests for help available.
                 </p>
             }
             </Container>

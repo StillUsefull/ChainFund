@@ -74,6 +74,8 @@ export function LoginPage() {
                     </Form.Group>
 
                     <Button variant="primary" type="submit">Login</Button>
+                    <Button variant="primary-outline" onClick={() => {navigate('/password-recovery')}}>Forgot Password?</Button>
+                    
                 </Form>
             </Container>
         </>

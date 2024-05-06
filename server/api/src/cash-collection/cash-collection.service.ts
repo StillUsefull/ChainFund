@@ -176,6 +176,9 @@ export class CashCollectionService {
         if (!collection){
             throw new NotFoundException()
         }
+        if (collection.state + amount > collection.goal){
+            return this.databaseService.cashCollection.update({where: {id}, data: {state: collection.state + amount, achieved: true}})
+        }
         return this.databaseService.cashCollection.update({where: {id}, data: {state: collection.state + amount}})
     }
 

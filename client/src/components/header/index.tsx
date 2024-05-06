@@ -44,6 +44,10 @@ export function Header() {
                                 <NavDropdown.Item href="/funds/art">
                                     Arts and Culture
                                 </NavDropdown.Item>
+                                <NavDropdown.Divider />
+                                <NavDropdown.Item href="/achieved-funds">
+                                    Achieved
+                                </NavDropdown.Item>
                             </NavDropdown>
                             <Nav.Link href='/creators' style={{color: '#FFF148'}}>Creators</Nav.Link>
                             <Nav.Link href='/blog' style={{color: '#FFF148'}}>Blog</Nav.Link>

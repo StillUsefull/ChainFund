@@ -10,7 +10,11 @@ import { PhotoService } from 'src/photo/photo.service';
 export class PostService {
     constructor(private readonly databaseService: DatabaseService, private readonly photoService: PhotoService){}
 
-    async getAll(){
+    getAll(){
+        return this.databaseService.post.findMany()
+    }
+
+    async getPublish(){
         return this.databaseService.post.findMany({where: {publish: true}})
     }
 
@@ -19,9 +23,12 @@ export class PostService {
     }
 
     async create(dto: CreatePostDto, user: JwtPayload, photo?: Express.Multer.File){
+        const expiresAt = new Date();
+        expiresAt.setDate(expiresAt.getDate() + 14); // now + 14 days
         let createData: any = {
             ...dto,
             authorId: user.id,
+            expires: expiresAt
         };
         if (photo){
             const photoUrl = await this.photoService.uploadFile(photo);
@@ -32,7 +39,7 @@ export class PostService {
         })
     }
 
-    async update(id: string, dto: UpdatePostDto, user: JwtPayload, photo?: Express.Multer.File){
+    async update(id: string, dto, user: JwtPayload, photo?: Express.Multer.File){
         const post = await this.findOne(id)
         if (!post){
             throw new NotFoundException()
@@ -83,8 +90,9 @@ export class PostService {
         if (!post.title || !post.text || !post.photo || !post.socialLink) {
             throw new ConflictException('To publish your post, you must fill in all fields.');
         }
-    
-        return this.update(id, {publish: true}, user)
+        const expiresAt = new Date();
+        expiresAt.setDate(expiresAt.getDate() + 14); // now + 14 days
+        return this.update(id, {publish: true, expires: expiresAt}, user)
     }
 
     async getMyPosts(user: JwtPayload){

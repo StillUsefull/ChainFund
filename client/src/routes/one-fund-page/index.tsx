@@ -7,20 +7,16 @@ import { notifyError, notifySuccess } from '@components/notifications';
 import { ToastContainer } from 'react-toastify';
 import { CreatorCard } from '@components/creator-card';  
 
-
 export function OneFundPage() {
   const { id } = useParams();
   const [fund, setFund] = useState(null);
   const [creator, setCreator] = useState(null);
-
-  
 
   useEffect(() => {
     const fetchFundData = async () => {
       try {
         const response = await api.get(`/cash-collection/findOne/${id}`);
         setFund(response.data);
-
         
         if (response.data.authorId) {
           const creatorResponse = await api.get(`/user/getOne/${response.data.authorId}`);
@@ -62,10 +58,16 @@ export function OneFundPage() {
         <Col md={4}>
           <img src={fund.photo} alt={fund.title} style={{ width: '100%', height: 'auto' }} />
           <h6 className="mt-2">Number of promoters: {promotersCount}</h6>
-          <Button variant='outline-success' size='lg' className="mt-3 w-100" onClick={handlePromote}>
-            Promote
-          </Button>
-          <br/>
+          {fund.achieved ? (
+            <h5 className="text-success mt-3">This fund has been successfully closed.</h5>
+          ) : (
+            <>
+              <Button variant='outline-success' size='lg' className="mt-3 w-100" onClick={handlePromote}>
+                Promote
+              </Button>
+              <br/>
+            </>
+          )}
           {creator && (
             <CreatorCard
               id={creator.id}
@@ -76,12 +78,18 @@ export function OneFundPage() {
           )}
         </Col>
       </Row>
-    
-      <h5>Collected: ${fund.state} of ${fund.goal}</h5>
-      <ProgressBar striped variant="success" style={{ height: '40px', fontSize: '20px' }} now={progress} label={`${progress.toFixed(0)}%`} />
-      <PayButton receiverEmail={fund.payPalEmail} fundId={id} />
-      
-      
+
+      {fund.achieved ? 
+      <div style={{marginBottom: '50px'}}>
+        <h5>Collected: ${fund.state} of ${fund.goal}</h5>
+        <ProgressBar striped variant="success" style={{ height: '40px', fontSize: '20px' }} now={progress} label={`${progress.toFixed(0)}%`} />
+      </div> : (
+        <>
+          <h5>Collected: ${fund.state} of ${fund.goal}</h5>
+          <ProgressBar striped variant="success" style={{ height: '40px', fontSize: '20px' }} now={progress} label={`${progress.toFixed(0)}%`} />
+          <PayButton receiverEmail={fund.payPalEmail} fundId={id} />
+        </>
+      )}
     </Container>
   );
 }

@@ -20,6 +20,11 @@ import { OneCreatorPage } from "@routes/one-creator-page";
 import { AdminHelpPage } from "@routes/admin-help-page";
 import { AdminHelpOnePage } from "@routes/admin-help-one-page";
 import { AdminCreatorPage } from "@routes/admin-creator-page";
+import { AdminPostsPage } from "@routes/admin-posts-page";
+import { AdminFundsPage } from "@routes/admin-funds-page";
+import { AdminUsersPage } from "@routes/admin-users-page";
+import { FundsAchievedPage } from "@routes/funds-achieved-page";
+import { RecoveryPasswordPage } from "@routes/recovery-password-page";
 
 
 
@@ -112,5 +117,25 @@ export const router = createBrowserRouter([
   {
     path: '/super/creator-requests',
     element: <AdminCreatorPage />
+  },
+  {
+    path: '/super/posts',
+    element: <AdminPostsPage />
+  },
+  {
+    path: '/super/funds',
+    element: <AdminFundsPage />
+  },
+  {
+    path: '/super/users',
+    element: <AdminUsersPage />
+  },
+  {
+    path: '/achieved-funds',
+    element: <FundsAchievedPage />
+  },
+  {
+    path: '/password-recovery',
+    element: <RecoveryPasswordPage />
   }
 ]);

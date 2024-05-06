@@ -10,7 +10,7 @@ export function BlogPage() {
 
   const fetchPosts = useCallback(async () => {
     try {
-      const response = await api.get(`/post?page=${page}&limit=10&sortBy=name&sortOrder=ASC`);
+      const response = await api.get(`/post?page=${page}&limit=10&sortBy=createdAt&sortOrder=DESC`);
       const newPosts = response.data.data;
 
       setPosts(prevPosts => {

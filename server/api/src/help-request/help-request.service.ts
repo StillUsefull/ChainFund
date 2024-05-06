@@ -9,10 +9,13 @@ export class HelpRequestService {
     
     constructor(private readonly databaseService: DatabaseService){}
     create(dto: CreateRequestDto, user: JwtPayload){
+        const expiresAt = new Date();
+        expiresAt.setDate(expiresAt.getDate() + 7); // now + 7 days
         return this.databaseService.helpRequest.create({
             data: {
                 ...dto,
-                userId: user.id
+                userId: user.id,
+                expires: expiresAt
             }
         })
     }

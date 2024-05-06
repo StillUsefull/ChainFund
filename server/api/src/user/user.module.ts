@@ -6,8 +6,9 @@ import {STRATEGIES} from '@auth/strategies'
 import {GUARDS} from '@auth/guards'
 import {CacheModule} from '@nestjs/cache-manager'
 import { PhotoModule } from 'src/photo/photo.module';
+import { MailModule } from 'src/mail/mail.module';
 @Module({
-  imports: [DatabaseModule, CacheModule.register(), PhotoModule],
+  imports: [DatabaseModule, CacheModule.register(), PhotoModule, MailModule],
   providers: [UserService,  ...STRATEGIES, ...GUARDS],
   controllers: [UserController],
   exports: [UserService]

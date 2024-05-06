@@ -22,7 +22,7 @@ export function AdminCreatorPage() {
         <>
             <SidebarMenu />
             <ToastContainer />
-            <Container style={{ marginLeft: '350px', padding: '20px', fontFamily: "cursive", color: '#020075' }}>
+            <Container style={{ marginLeft: '350px', padding: '20px', fontFamily: "cursive" }}>
                 {requests.length > 0 ? (
                     requests.map(request => (
                         <div key={request.id} style={{ marginTop: '30px' }}>

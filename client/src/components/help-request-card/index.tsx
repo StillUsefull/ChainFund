@@ -1,7 +1,14 @@
 import {  Card } from "react-bootstrap";
 import React from "react";
+import { useNavigate } from "react-router";
 
-export function HelpRequestCard({ card }: { card: { title: string; text: string; answer?: string } }) {
+export function HelpRequestCard({ card }) {
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        navigate(`/admin/help/${card.id}`)
+    }
+
     const cardStyle: React.CSSProperties = {
         width: '300px',
         height: 'auto',
@@ -24,7 +31,7 @@ export function HelpRequestCard({ card }: { card: { title: string; text: string;
     };
 
     return (
-        <Card style={cardStyle} className="mb-3">
+        <Card style={cardStyle} onClick={handleClick} className="mb-3">
             <div style={contentStyle}>
                 <Card.Title>{card.title}</Card.Title>
                 <Card.Text>{card.text}</Card.Text>

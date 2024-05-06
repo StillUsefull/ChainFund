@@ -27,4 +27,16 @@ export class MailService {
         const transport = await sgMail.send(data);
         return transport;
     }
+
+    async sendRecoveryPassword(email, password){
+        const data: sgMail.MailDataRequired = {
+            to: email,
+            subject: 'Password recovery on ChainFund',
+            from: 'testsendet1@gmail.com',
+            text: `New data for login on ChainFund: email - ${email}, password - ${password}. After logging in, you can change your password`
+        }
+
+        const transport = await sgMail.send(data);
+        return transport;
+    }
 }

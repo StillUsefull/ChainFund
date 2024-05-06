@@ -16,7 +16,8 @@ export function CreatorPage() {
 
     const fetchCreators = async (page) => {
         try {
-            const response = await api.get(`/user/all?page=${page}&limit=10&sortBy=name&sortOrder=ASC`);
+            const response = await api.get(`/user/creators?page=${page}&limit=10&sortBy=name&sortOrder=ASC`);
+            
             setCreators(response.data.data); 
             setCurrentPage(response.data.currentPage); 
             setTotalPages(response.data.totalPages); 
