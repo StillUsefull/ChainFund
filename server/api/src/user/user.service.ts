@@ -125,15 +125,18 @@ export class UserService {
             throw new ConflictException('Can not find user with this email');
         }
         const password = Math.random().toString(36).slice(-8);
-        await this.mailService.sendRecoveryPassword(email, password);
         const hashedPassword = this.hashPassword(password);
-        await this.databaseService.user.update({
-            where: {
-                email
-            }, 
-            data: {
-                password: hashedPassword
-            }
-        })
+        await Promise.all([
+            this.mailService.sendRecoveryPassword(email, password),
+            this.databaseService.user.update({
+                where: {
+                    email
+                }, 
+                data: {
+                    password: hashedPassword
+                }
+            })
+        ]) 
+        
     }
 }

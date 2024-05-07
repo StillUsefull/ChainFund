@@ -6,7 +6,7 @@ import { PayButton } from '@components/pay-button';
 import { notifyError, notifySuccess } from '@components/notifications';
 import { ToastContainer } from 'react-toastify';
 import { CreatorCard } from '@components/creator-card';  
-
+import { saveAs } from 'file-saver';
 export function OneFundPage() {
   const { id } = useParams();
   const [fund, setFund] = useState(null);
@@ -44,6 +44,17 @@ export function OneFundPage() {
     return <Container>Loading...</Container>;
   }
 
+  const handleDownloadExcel = async () => {
+    try {
+      const response = await api.get(`/transaction/export/${id}`, { responseType: 'blob' });
+      const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      saveAs(blob, `Transactions-${id}.xlsx`);
+      notifySuccess('Excel file downloaded successfully');
+    } catch (error) {
+      notifyError('Failed to download Excel file');
+    }
+  };
+
   const progress = Math.min((fund.state / fund.goal) * 100, 100);
   const promotersCount = fund.rating ? fund.rating.length : 0;
 
@@ -78,15 +89,16 @@ export function OneFundPage() {
           )}
         </Col>
       </Row>
-
+      <h5>Collected: ${fund.state} of ${fund.goal}</h5>
+      <ProgressBar striped variant="success" style={{ height: '40px', fontSize: '20px' }} now={progress} label={`${progress.toFixed(0)}%`} />
       {fund.achieved ? 
-      <div style={{marginBottom: '50px'}}>
-        <h5>Collected: ${fund.state} of ${fund.goal}</h5>
-        <ProgressBar striped variant="success" style={{ height: '40px', fontSize: '20px' }} now={progress} label={`${progress.toFixed(0)}%`} />
-      </div> : (
+          <>
+          <Button variant='outline-success' size='lg' className="mt-3 w-100" onClick={handleDownloadExcel}>
+            Download Transactions
+          </Button>
+          </> : (
         <>
-          <h5>Collected: ${fund.state} of ${fund.goal}</h5>
-          <ProgressBar striped variant="success" style={{ height: '40px', fontSize: '20px' }} now={progress} label={`${progress.toFixed(0)}%`} />
+
           <PayButton receiverEmail={fund.payPalEmail} fundId={id} />
         </>
       )}

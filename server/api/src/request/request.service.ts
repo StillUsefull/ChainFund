@@ -11,6 +11,7 @@ export class RequestService {
                 private readonly userServise: UserService,
                 private readonly mailService: MailService
             ){}
+
     create(dto: CreateRequestDto){
         return this.databaseService.request.create({
             data: {
@@ -38,9 +39,11 @@ export class RequestService {
             password: password,
             name: request.name
         }
-        await this.userServise.create(dto, Role.ADMIN);
-        await this.mailService.sendApprovedRequest(request.email, password);
-        await this.databaseService.request.delete({where: {id}});
+        await Promise.all([
+            this.userServise.create(dto, Role.ADMIN),
+            this.mailService.sendApprovedRequest(request.email, password),
+            this.databaseService.request.delete({where: {id}})
+        ]);
     }
 
 
@@ -50,7 +53,10 @@ export class RequestService {
             throw new NotFoundException();
         }
 
-        await this.mailService.sendDeclineRequest(request.email);
-        await this.databaseService.request.delete({where: {id}});
+        await Promise.all([
+            this.mailService.sendDeclineRequest(request.email),
+            await this.databaseService.request.delete({where: {id}})
+        ]) 
+        
     }
 }

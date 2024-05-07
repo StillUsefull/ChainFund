@@ -1,7 +1,8 @@
 import { JwtPayload } from '@auth/interfaces/JwtPayload';
-import { UserDecorator } from '@common/decorators';
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Public, UserDecorator } from '@common/decorators';
+import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
+import { Response } from 'express';
 
 @Controller('transaction')
 export class TransactionController {
@@ -16,5 +17,12 @@ export class TransactionController {
     @Get()
     getMy(@UserDecorator() user: JwtPayload){
         return this.transactionService.getMy(user);
+    }
+
+
+    @Public()
+    @Get('/export/:id')
+    async export(@Param('id') collectionId: string, @Res() res: Response){
+        return this.transactionService.createExcelFile(collectionId, res);
     }
 }
