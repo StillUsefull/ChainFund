@@ -27,7 +27,7 @@ export class AuthService {
     }
 
     async login(dto: LoginUserDto, userAgent: string): Promise<Tokens>{
-        const user = await this.userService.findByEmail(dto.email).catch(err => {
+        const user = await this.userService.findOne({email: dto.email}).catch(err => {
             this.logger.error(err);
             return null;
         });
@@ -86,7 +86,7 @@ export class AuthService {
         if(new Date(token.exp) < new Date()){
             throw new UnauthorizedException()
         }
-        const user = await this.userService.findOne(token.userId)
+        const user = await this.userService.findOne({id: token.userId})
         return this.generateTokens(user, userAgent);
     }
 

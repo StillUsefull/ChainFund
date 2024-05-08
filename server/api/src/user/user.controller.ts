@@ -22,7 +22,7 @@ export class UserController {
     @UseInterceptors(ClassSerializerInterceptor)
     @Get('all')
     async getAll(){
-        const users = await this.userService.getAll()
+        const users = await this.userService.findMany()
         return users.map((user) => new GetUserDto(user))
     }
 
@@ -31,15 +31,15 @@ export class UserController {
     @UseInterceptors(PaginationInterceptor)
     @Get('/creators')
     async getCreators(){
-        const creators = await this.userService.getCreators();
+        const creators = await this.userService.findMany({role: Role.ADMIN});
         return creators.map((creator) => new GetUserDto(creator))
     }
 
     @Public()
     @UseInterceptors(GetUserDto)
-    @Get("/getOne/:scan")
-    async findOneUser(@Param('scan') scan: string){
-        const user = await this.userService.findOne(scan);
+    @Get("/getOne/:id")
+    async findOneUser(@Param('id') id: string){
+        const user = await this.userService.findOne({id});
         return new GetUserDto(user)
     }
 
@@ -72,7 +72,7 @@ export class UserController {
     @UseInterceptors(GetUserDto)
     @Get('/iam')
     async iam(@UserDecorator() user: JwtPayload){
-        return this.userService.findOne(user.id);
+        return this.userService.findOne({id: user.id});
         
     }
 

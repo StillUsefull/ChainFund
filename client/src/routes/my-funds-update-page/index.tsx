@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { notifyError, notifySuccess } from "@components/notifications";
 import SidebarMenu from "@components/side-bar-menu";
 import { UpdateFundForm } from "@components/update-fund-form";
@@ -11,23 +11,37 @@ export function UpdateFundPage() {
     let { id } = useParams();
     const navigate = useNavigate();
 
+    const [isPublished, setIsPublished] = useState(false);
     const [showPublishDialog, setShowPublishDialog] = useState(false);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+    useEffect(() => {
+        const fetchFundStatus = async () => {
+            try {
+                const response = await api.get(`/cash-collection/findOne/${id}`);
+                setIsPublished(response.data.publish);
+            } catch (error) {
+                console.error("Failed to fetch fund data", error);
+            }
+        };
+
+        fetchFundStatus();
+    }, [id]);
 
     const handlePublish = async () => {
         await api.get(`/cash-collection/publish/${id}`)
             .then(() => {
                 notifySuccess('Your fund was published');
+                setIsPublished(true); // Update the state to reflect the fund is now published
             })
             .catch((err) => {
-                if (err.response.status != 500){
+                if (err.response && err.response.status !== 500) {
                     let message = err.response.data.message;
                     message = message.charAt(0).toUpperCase() + message.slice(1);
                     notifyError(message);
                 } else {
                     notifyError('Failed to update fund');
                 }
-                
             });
     };
 
@@ -52,7 +66,11 @@ export function UpdateFundPage() {
                 <UpdateFundForm fundId={id} />
                 <div className="d-flex justify-content-end mt-4">
                     <ButtonGroup>
-                        <Button variant="success" onClick={() => setShowPublishDialog(true)}>Publish</Button>
+                        {!isPublished ? (
+                            <Button variant="success" onClick={() => setShowPublishDialog(true)}>Publish</Button>
+                        ) : (
+                            <span style={{marginRight: '20px', fontFamily: 'cursive', color: 'blue'}}>Already published</span>
+                        )}
                         <Button variant="danger" onClick={() => setShowDeleteDialog(true)}>Delete</Button>
                     </ButtonGroup>
                 </div>

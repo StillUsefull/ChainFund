@@ -32,19 +32,25 @@ export function CommentsSection({ collectionId }) {
         fund: collectionId,
         text: newComment
       });
+      console.log(response.data)
       setComments([...comments, response.data]);
+     
       setNewComment(""); 
     } catch (error) {
       console.error('Failed to post comment:', error);
     }
   };
 
+  const removeComment = (commentId) => {
+    setComments(comments.filter(comment => comment.id !== commentId));
+  };
+
   return (
     <Container style={{margin: '20px', fontFamily: 'cursive', fontSize: '15px'}}>
       <ListGroup>
-        {comments.map((comment) => (
+        {comments && comments.map((comment) => (
           <ListGroup.Item key={comment.id}>
-            <OneCommentCard comment={comment} />
+            <OneCommentCard comment={comment} onRemove={removeComment}/>
           </ListGroup.Item>
         ))}
       </ListGroup>

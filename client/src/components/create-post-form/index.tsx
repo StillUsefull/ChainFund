@@ -46,8 +46,7 @@ export function CreatePostForm() {
             notifySuccess('Post created successfully!');
             setTimeout(() => {navigate(`/profile/posts/${response.data.id}`)}, 2000)
         } catch (err) {
-            console.log(err)
-            notifyError('Failed to create fund');
+            notifyError(err.response.data.message[0] || 'Failed to create fund');
             console.error(err);
             setLoading(false);
         }
@@ -60,7 +59,7 @@ export function CreatePostForm() {
                 <h2>Create Post</h2>
                 <Form onSubmit={handleSubmit}>
                     <Form.Group className="mb-3">
-                        <Form.Label>Title</Form.Label>
+                        <Form.Label>Title </Form.Label>
                         <Form.Control type="text" name="title" value={fundData.title} onChange={handleInputChange} />
                     </Form.Group>
                     <Form.Group className="mb-3">

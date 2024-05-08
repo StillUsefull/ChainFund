@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Card, Button } from 'react-bootstrap';
 import { motion } from 'framer-motion';
+import { truncateText } from '@utils/truncateText';
 
 export function BlogCard({ post, admin }) {
   const { id, title, text, photo, socialLink } = post;
@@ -15,9 +16,6 @@ export function BlogCard({ post, admin }) {
     }
   };
 
-  const truncateText = (text, limit = 30) => {
-    return text ? text.split(' ').slice(0, limit).join(' ') + '...' : ' ';
-  };
 
   return (
     <Card className="mb-4" style={{ width: '600px', height: '600px', cursor: 'pointer' }} onClick={handleCardClick}>

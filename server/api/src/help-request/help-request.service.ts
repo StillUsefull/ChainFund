@@ -2,7 +2,8 @@ import { JwtPayload } from '@auth/interfaces/JwtPayload';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateRequestDto } from './dto/CreateRequest.dto';
 import { DatabaseService } from '@database/database.service';
-import { Role } from '@prisma/client';
+import { Prisma, Role } from '@prisma/client';
+import { validateUserPermission } from '@common/utils';
 
 @Injectable()
 export class HelpRequestService {
@@ -20,8 +21,10 @@ export class HelpRequestService {
         })
     }
 
-    getOne(id: string) {
-        return this.databaseService.helpRequest.findUnique({where: {id}});
+    findOne(where: Prisma.HelpRequestWhereUniqueInput) {
+        return this.databaseService.helpRequest.findUnique({
+            where
+        });
     }
 
     setAnswer(id: string, text: string){
@@ -33,16 +36,16 @@ export class HelpRequestService {
         })
     }
 
-    getAll(){
-        return this.databaseService.helpRequest.findMany();
+    findMany(where: Prisma.HelpRequestWhereInput){
+        return this.databaseService.helpRequest.findMany({
+            where
+        });
     }
 
     async delete(id: string, user: JwtPayload){
-        const request = await this.databaseService.helpRequest.findUnique({where: {id}});
+        const request = await this.findOne({id})
 
-        if (request.userId != user.id && user.role != Role.SUPER){
-            throw new ForbiddenException()
-        }
+        validateUserPermission(user, id);
 
         if (!request){
             throw new NotFoundException()
@@ -51,7 +54,4 @@ export class HelpRequestService {
         return this.databaseService.helpRequest.delete({where: {id}})
     }
 
-    getMy(user: JwtPayload){
-        return this.databaseService.helpRequest.findMany({where: {userId: user.id}})
-    }
 }

@@ -24,7 +24,7 @@ export class CommentController {
 
     @Public()
     @Get('/:id')
-    getByCashCollection(@Param('id') id: string){
-        return this.commentService.getById(id);
+    getByPost(@Param('id') id: string){
+        return this.commentService.findMany({postId: id});
     }
 }

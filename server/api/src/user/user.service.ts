@@ -4,73 +4,54 @@ import { Prisma, Role, User } from '@prisma/client';
 import { compareSync, genSaltSync, hashSync } from 'bcrypt'
 import { JwtPayload } from '@auth/interfaces/JwtPayload';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
-import { ConfigService } from '@nestjs/config';
-import { convertTimeToSeconds } from '@common/utils';
 import { UpdateUserDto } from './dto/UpdateUser.dto';
 import { PhotoService } from 'src/photo/photo.service';
 import { CreateUserDto } from './dto/CreateUser.dto';
 import { updatePasswordDto } from './dto/UpdatePassword.dto';
 import { MailService } from 'src/mail/mail.service';
+import { validateUserPermission } from '@common/utils';
 @Injectable()
 export class UserService {
     constructor(private readonly databaseService: DatabaseService,
                 private readonly photoService: PhotoService,
-                private readonly mailService: MailService
+                private readonly mailService: MailService,
     ){}
 
-    async create(dto: CreateUserDto, role?: Role){
-        const user = await this.findByEmail(dto.email);
+    async create(dto: CreateUserDto, role?: Role): Promise<User | null>{
+        const user = await this.findOne({email: dto.email});
         if (user){
             throw new ConflictException(`User with email ${dto.email} have already registered`)
         }
         dto.password = this.hashPassword(dto.password)
-        if (role) {
-            return this.databaseService.user.create({
-                data: {
-                    ...dto,
-                    role
-                }
-            })
-        }
         return this.databaseService.user.create({
             data: {
                 ...dto,
+                ...(role && {role})
             }
         })
     }
 
-    async getAll(){
-        return this.databaseService.user.findMany();
-    }
 
-    getCreators(){
-        return this.databaseService.user.findMany({where: {role: Role.ADMIN}});
-    }
-
-    async findOne(id: string) {
+    findOne(where: Prisma.UserWhereUniqueInput): Promise<User | null> {
         return this.databaseService.user.findUnique({
-            where: {
-                id
-            }
+            where,
         });
     }
 
-    async findByEmail(email: string) {
-        return this.databaseService.user.findUnique({
-            where: {
-                email
-            }
+    async findMany(where: Prisma.UserWhereInput = {}): Promise<User[]> {
+        return this.databaseService.user.findMany({
+            where,
         });
     }
 
-    async update(id: string,  user: JwtPayload, dto: Partial<UpdateUserDto>, file: Express.Multer.File){
+    async update(id: string,  user: JwtPayload, dto: Partial<UpdateUserDto>, file: Express.Multer.File): Promise<User | null>{
         if (id !== user.id && user.role !== Role.SUPER){
             throw new ForbiddenException()
         }
         let updateData: any = {
             ...dto
         }
-        const userData = await this.findOne(id)
+        const userData = await this.findOne({id})
         if(file){
             if (userData.photo){
                 await this.photoService.deletePhotoByUrl(userData.photo)
@@ -87,19 +68,17 @@ export class UserService {
         })
     }
 
-    async delete(id: string, user: JwtPayload){
-        if (id !== user.id && user.role !== Role.SUPER){
-            throw new ForbiddenException()
-        }
+    async delete(id: string, user: JwtPayload): Promise<Object>{
+        validateUserPermission(user, id)
         return this.databaseService.user.delete({where: { id }, select: {id: true}})
     }
 
-    private hashPassword(password: string){
+    private hashPassword(password: string): string{
         return hashSync(password, genSaltSync(10));
     }
 
     async updatePassword(user: JwtPayload, dto: updatePasswordDto){
-        const data = await this.findOne(user.id);
+        const data = await this.findOne({id: user.id});
         if (!data){
             throw new NotFoundException()
         }
@@ -120,7 +99,7 @@ export class UserService {
     }
 
     async passwordRecovery(email: string){
-        const user = await this.databaseService.user.findUnique({where: {email}});
+        const user = await this.findOne({email})
         if (!user){
             throw new ConflictException('Can not find user with this email');
         }

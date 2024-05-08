@@ -32,10 +32,9 @@ export class AuthController {
     async login(@Body() dto: LoginUserDto, @Res() response: Response, @UserAgent() userAgent){
         const tokens = await this.authService.login(dto, userAgent);
         if (!tokens){
-            throw new BadRequestException('Неможливо увійти за цим користувачем');
+            throw new BadRequestException('Unable to login with this user');
         }
         this.setRefreshToken(tokens, response);
-      //  return {accessToken: tokens.accessToken};
     }
 
     @Get('refresh')

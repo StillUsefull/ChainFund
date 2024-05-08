@@ -4,7 +4,8 @@ import { CreateCollectionDto } from './dto/CreateCollection.dto';
 import { JwtPayload } from '@auth/interfaces/JwtPayload';
 import { PhotoService } from 'src/photo/photo.service';
 import { UpdateCollectionDto } from './dto/UpdateCollection.dto';
-import { Category, Comment, Role } from '@prisma/client';
+import { Category, Comment, Prisma, Role } from '@prisma/client';
+import { validateUserPermission } from '@common/utils';
 
 
 @Injectable()
@@ -21,62 +22,23 @@ export class CashCollectionService {
         }
     }
 
-    getAll(){
-        return this.databaseService.cashCollection.findMany();
+    findOne(where: Prisma.CashCollectionWhereUniqueInput){
+        return this.databaseService.cashCollection.findUnique({
+            where
+        })
     }
 
-    getArchive(){
-        return this.databaseService.cashCollection.findMany({where: {
-            achieved: true,
-            publish: true
-        }})
+    findMany(where: Prisma.CashCollectionWhereInput){
+        return this.databaseService.cashCollection.findMany({
+            where
+        })
     }
-
-    getPublic(){
-        return this.databaseService.cashCollection.findMany({where: {
-            publish: true,
-            achieved: false
-        }})
-    }
-
-    getByUser(user: JwtPayload){
-        return this.databaseService.cashCollection.findMany({where: {authorId: user.id}})
-    }
-
-    getByCategory(category: string){
-        
-        if (!this.categoryTemplate[category]){
-            throw new NotFoundException('There is no that category');
-        }
-        return this.databaseService.cashCollection.findMany({where: 
-            {
-                category: this.categoryTemplate[category],
-                publish: true
-            }})
-    }
-
-    async findOne(id: string){
-        const collection = await this.databaseService.cashCollection.findFirst({where: {id}});
-        if (!collection){
-            throw new NotFoundException('There is no fund with that id') 
-        }
-        return collection;
-    }
+    
 
     async create(dto: CreateCollectionDto, user: JwtPayload, photo?: Express.Multer.File) {
         const createData: any = {
             ...dto,
             authorId: user.id
-        }
-        if (dto.category){
-            if (!this.categoryTemplate[dto.category]){
-                throw new NotFoundException('There is no that category');
-            }
-            createData.category = this.categoryTemplate[dto.category];
-        }
-
-        if (dto.goal){
-            createData.goal = Number(dto.goal);
         }
         if (photo){
             const photoUrl = await this.photoService.uploadFile(photo);
@@ -84,29 +46,19 @@ export class CashCollectionService {
         }
 
         return this.databaseService.cashCollection.create({
-            data: createData
+            data: {
+                ...createData,
+                ...(dto.goal && {goal: Number(dto.goal)}),
+                ...(this.categoryTemplate[dto.category] && {category: this.categoryTemplate[dto.category]})
+            }
         })
     }
 
     async update(id: string, dto: UpdateCollectionDto, user: JwtPayload, photo: Express.Multer.File){
-        const collection = await this.findOne(id);
-        if (!collection){
-            throw new NotFoundException()
-        }
-        if (user.id !== collection.authorId && user.role !== Role.SUPER){
-            throw new ForbiddenException();
-        }
+        const collection = await this.findOne({id}).catch(() => {throw new NotFoundException()});
+        validateUserPermission(user, collection.authorId);
         const updateData: any = {
             ...dto
-        }
-        if (dto.category){
-            if (!this.categoryTemplate[dto.category]){
-                throw new NotFoundException('There is no that category');
-            }
-            updateData.category = this.categoryTemplate[dto.category];
-        }
-        if (dto.goal){
-            updateData.goal = Number(dto.goal);
         }
         if (photo){
             if (collection.photo){
@@ -117,15 +69,17 @@ export class CashCollectionService {
         }
         return this.databaseService.cashCollection.update({
             where: {id},
-            data: updateData
+            data: {
+                ...updateData,
+                ...(this.categoryTemplate[dto.category] && {category: this.categoryTemplate[dto.category]}),
+                ...(dto.goal && {goal: Number(dto.goal)})
+            }
         })
     }
 
     async delete(id: string, user: JwtPayload){
-        const collection = await this.databaseService.cashCollection.findUnique({where: {id}})
-        if (user.id !== collection.authorId && user.role !== Role.SUPER){
-            throw new ForbiddenException();
-        }
+        const collection = await this.findOne({id})
+        validateUserPermission(user, collection.authorId);
         if (collection.photo){
             await this.photoService.deletePhotoByUrl(collection.photo);
         }
@@ -134,14 +88,8 @@ export class CashCollectionService {
 
 
     async publish(id: string, user: JwtPayload){
-        const collection = await this.databaseService.cashCollection.findUnique({where: {id}})
-        if (!collection){
-            throw new NotFoundException();
-        }
-        if (user.id !== collection.authorId && user.role !== Role.SUPER){
-            throw new ForbiddenException();
-        }
-
+        const collection = await this.findOne({id}).catch(() => {throw new NotFoundException})
+        validateUserPermission(user, collection.authorId)
         if (collection.title && collection.text && collection.photo && collection.payPalEmail && collection.goal && collection.category){
             return this.databaseService.cashCollection.update({where: {id}, data: {publish: true}});
         }
@@ -149,10 +97,7 @@ export class CashCollectionService {
     }
 
     async promote(id: string, user: JwtPayload){
-        const collection = await this.databaseService.cashCollection.findUnique({where: {id}});
-        if (!collection){
-            throw new NotFoundException()
-        }
+        const collection = await this.findOne({id}).catch(() => {throw new NotFoundException})
         const rating = collection.rating;
         if (rating.includes(user.id)){
             throw new ConflictException('You have already promoted this fund')
@@ -172,7 +117,7 @@ export class CashCollectionService {
     }
 
     async changeState(id, amount){
-        const collection = await this.findOne(id);
+        const collection = await this.findOne({id});
         if (!collection){
             throw new NotFoundException()
         }

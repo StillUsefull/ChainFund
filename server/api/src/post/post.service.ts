@@ -2,24 +2,26 @@ import { DatabaseService } from '@database/database.service';
 import { ConflictException, ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreatePostDto } from './dto/CreatePost.dto';
 import { JwtPayload } from '@auth/interfaces/JwtPayload';
-import { Role } from '@prisma/client';
-import { UpdatePostDto } from './dto/UpdatePost.dto';
+import { Post, Prisma, Role } from '@prisma/client';
 import { PhotoService } from 'src/photo/photo.service';
+import { validateUserPermission } from '@common/utils';
 
 @Injectable()
 export class PostService {
     constructor(private readonly databaseService: DatabaseService, private readonly photoService: PhotoService){}
 
-    getAll(){
-        return this.databaseService.post.findMany()
+    
+
+    findOne(where: Prisma.PostWhereUniqueInput): Promise<Post | null>{
+        return this.databaseService.post.findUnique({
+            where
+        })
     }
 
-    async getPublish(){
-        return this.databaseService.post.findMany({where: {publish: true}})
-    }
-
-    async findOne(id: string){
-        return this.databaseService.post.findFirst({where: {id}})
+    findMany(where: Prisma.PostWhereInput = {}): Promise<Post[] | null>{
+        return this.databaseService.post.findMany({
+            where
+        })
     }
 
     async create(dto: CreatePostDto, user: JwtPayload, photo?: Express.Multer.File){
@@ -40,13 +42,13 @@ export class PostService {
     }
 
     async update(id: string, dto, user: JwtPayload, photo?: Express.Multer.File){
-        const post = await this.findOne(id)
+        const post = await this.findOne({id})
         if (!post){
             throw new NotFoundException()
         }
-        if (user.id !== post.authorId && user.role !== Role.SUPER){
-            throw new ForbiddenException();
-        }
+
+        validateUserPermission(user, post.authorId)
+        
         let updateData: any = {
             ...dto
         };
@@ -64,13 +66,11 @@ export class PostService {
     }
 
     async delete(id: string, user: JwtPayload){
-        const post = await this.databaseService.post.findUnique({where: {id}})
+        const post = await this.findOne({id})
         if (!post){
             throw new ConflictException('There is no post that you try to delete')
         }
-        if (user.id !== post.authorId && user.role !== Role.SUPER){
-            throw new ForbiddenException();
-        }
+        validateUserPermission(user, post.authorId)
         if (post.photo){
             await this.photoService.deletePhotoByUrl(post.photo);
         }
@@ -78,7 +78,7 @@ export class PostService {
     }
 
     async publish(id: string, user: JwtPayload){
-        const post = await this.findOne(id);
+        const post = await this.findOne({id});
         if (!post) {
             throw new NotFoundException('Post not found.');
         }
@@ -95,16 +95,4 @@ export class PostService {
         return this.update(id, {publish: true, expires: expiresAt}, user)
     }
 
-    async getMyPosts(user: JwtPayload){
-        return this.databaseService.post.findMany({where: {authorId: user.id}})
-    }
-
-    getByCreator(id: string){
-        return this.databaseService.post.findMany({
-            where: {
-                authorId: id,
-                publish: true
-            }
-        })
-    }
 }

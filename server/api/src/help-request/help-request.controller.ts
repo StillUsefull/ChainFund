@@ -28,7 +28,7 @@ export class HelpRequestController {
 
     @Get('/my')
     getMy(@UserDecorator() user: JwtPayload){
-        return this.helpRequestService.getMy(user);
+        return this.helpRequestService.findMany({userId: user.id});
     }
 
 
@@ -36,13 +36,13 @@ export class HelpRequestController {
     @Roles(Role.SUPER)
     @Get('/all')
     getAll(){
-        return this.helpRequestService.getAll()
+        return this.helpRequestService.findMany({})
     }
 
 
 
     @Get('/one/:id')
     getOne(@Param('id') id: string){
-        return this.helpRequestService.getOne(id)
+        return this.helpRequestService.findOne({id})
     }
 }

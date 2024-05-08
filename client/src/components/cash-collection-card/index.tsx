@@ -1,3 +1,4 @@
+import { truncateText } from '@utils/truncateText';
 import Card from 'react-bootstrap/Card';
 import { useNavigate } from 'react-router-dom';
 
@@ -24,14 +25,6 @@ export function CashCollectionCard({fund, admin}) {
   const defaultPhoto = "https://via.placeholder.com/600x600";
   const promotersCount = fund.rating ? fund.rating.length : 0;
 
-  const truncateText = (text, limit) => {
-    if (!text) return '';
-    const words = text.split(' ');
-    if (words.length > limit) {
-      return words.slice(0, limit).join(' ') + '...';
-    }
-    return text;
-  };
 
   const overlayStyle = promotersCount > 0 ? { color: '#7DFF53', fontFamily: 'cursive' } : { fontFamily: 'cursive', color: '#FFF148' };
   const textBackgroundStyle = {

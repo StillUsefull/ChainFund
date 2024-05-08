@@ -19,7 +19,7 @@ export class PostController {
     @UseInterceptors(PaginationInterceptor)
     @Get()
     getPublish(){
-        return this.postService.getPublish()
+        return this.postService.findMany({publish: true})
     }
 
     @UseGuards(RoleGuard)
@@ -27,13 +27,13 @@ export class PostController {
     @UseInterceptors(PaginationInterceptor)
     @Get('all')
     getAll(){
-        return this.postService.getAll()
+        return this.postService.findMany()
     }
 
     @Public()
     @Get('/findOne/:id')
     findOne(@Param('id') id: string){
-        return this.postService.findOne(id);
+        return this.postService.findOne({id});
     }
 
     @Post('/create')
@@ -75,13 +75,16 @@ export class PostController {
     @UseGuards(RoleGuard)
     @Roles(Role.ADMIN)
     getMy(@UserDecorator() user: JwtPayload){
-        return this.postService.getMyPosts(user)
+        return this.postService.findMany({authorId: user.id})
     }
 
 
     @Public()
     @Get('/byCreator/:id')
     getByCreator(@Param('id') id: string){
-        return this.postService.getByCreator(id)
+        return this.postService.findMany({
+            authorId: id,
+            publish: true
+        })
     }
 }

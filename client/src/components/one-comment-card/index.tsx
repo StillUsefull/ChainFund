@@ -7,7 +7,7 @@ import { useAuth } from "@utils/auth";
 import { ToastContainer } from "react-toastify";
 import { ConfirmationDialog } from "@components/confirmation-dialog";
 
-export function OneCommentCard({ comment }) {
+export function OneCommentCard({ comment, onRemove }) {
     const [author, setAuthor] = useState(null);
     const [editMode, setEditMode] = useState(false);
     const [editedText, setEditedText] = useState(comment.text);
@@ -54,6 +54,7 @@ export function OneCommentCard({ comment }) {
         try {
             await api.delete(`/comment/${comment.id}`);
             notifySuccess('Comment deleted successfully');
+            onRemove(comment.id)
         } catch (error) {
             notifyError('Failed to delete comment');
             console.error('Failed to delete comment:', error);

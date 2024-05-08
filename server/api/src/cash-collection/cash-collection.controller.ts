@@ -19,7 +19,7 @@ export class CashCollectionController {
     @Get('/all')
     @UseInterceptors(PaginationInterceptor)
     getAll(){
-        return this.cashCollectionService.getAll();
+        return this.cashCollectionService.findMany({});
     }
 
     
@@ -27,34 +27,34 @@ export class CashCollectionController {
     @Get()
     @UseInterceptors(PaginationInterceptor)
     getPublic(){
-        return this.cashCollectionService.getPublic()
+        return this.cashCollectionService.findMany({publish: true, achieved: false})
     }
 
     @Public()
     @UseInterceptors(PaginationInterceptor)
     @Get('/archive')
     getArchive(){
-        return this.cashCollectionService.getArchive();
+        return this.cashCollectionService.findMany({publish: true, achieved: true});
     }
 
     @Public()
     @Get('/category/:category')
     @UseInterceptors(PaginationInterceptor)
-    getByCategory(@Param('category') category: string){
-        return this.cashCollectionService.getByCategory(category)
+    getByCategory(@Param('category') category: Category){
+        return this.cashCollectionService.findMany({publish: true, category, achieved: false})
     }
 
     @Public()
     @Get('/findOne/:id')
     getById(@Param('id') id: string){
-        return this.cashCollectionService.findOne(id);
+        return this.cashCollectionService.findOne({id});
     }
 
     @UseGuards(RoleGuard)
     @Roles(Role.ADMIN)
     @Get('/my')
     getMyCollections(@UserDecorator() user: JwtPayload){
-        return this.cashCollectionService.getByUser(user);
+        return this.cashCollectionService.findMany({authorId: user.id});
     }
 
     @Post('/create')

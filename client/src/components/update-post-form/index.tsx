@@ -11,6 +11,7 @@ export function UpdatePostForm({ postId }) {
         text: '',
         socialLink: '',
         photo: '',
+        publish: false
     });
     const [loading, setLoading] = useState(false);
     const [file, setFile] = useState<File | null>(null);
@@ -25,6 +26,7 @@ export function UpdatePostForm({ postId }) {
                     text: response.data.text || '',
                     socialLink: response.data.socialLink || '',
                     photo: response.data.photo || '',
+                    publish: response.data.publish || false
                 });
                 setLoading(false);
             } catch (err) {
@@ -61,18 +63,16 @@ export function UpdatePostForm({ postId }) {
 
         try {
             setLoading(true);
-            const response = await api.put(`/post/update/${postId}`, formData, {
+            await api.put(`/post/update/${postId}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            console.log(response)
             notifySuccess('Post updated successfully!');
             setLoading(false)
         } catch (err) {
             console.log(err);
-            notifyError('Failed to update post');
-            console.error(err);
+            notifyError(err.response.data.message[0] || 'Failed to update post');
             setLoading(false);
         }
     };
@@ -93,14 +93,14 @@ export function UpdatePostForm({ postId }) {
                         <Form.Control as="textarea" rows={3} name="text" value={postData.text} onChange={handleInputChange} />
                     </Form.Group>
                     <Form.Group className="mb-3">
-                        <Form.Label>Google Pay Link</Form.Label>
+                        <Form.Label>Link to a publication or account on another social network</Form.Label>
                         <Form.Control type="url" name="socialLink" value={postData.socialLink} onChange={handleInputChange} />
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label>File (.jpg only)</Form.Label>
                         <Form.Control type="file" onChange={handleFileChange} accept=".jpg" />
                     </Form.Group>
-                    <Button variant="primary" type="submit" disabled={loading}>
+                    <Button variant="primary" type="submit" disabled={loading || postData.publish}>
                         {loading ? 'Updating...' : 'Update Post'}
                     </Button>
                 </Form>

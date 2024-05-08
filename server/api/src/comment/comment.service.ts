@@ -1,7 +1,8 @@
 import { JwtPayload } from '@auth/interfaces/JwtPayload';
+import { validateUserPermission } from '@common/utils';
 import { DatabaseService } from '@database/database.service';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { Role } from '@prisma/client';
+import { Prisma, Role } from '@prisma/client';
 
 @Injectable()
 export class CommentService {
@@ -18,14 +19,24 @@ export class CommentService {
         })
     }
 
+    findOne(where: Prisma.CommentWhereUniqueInput){
+        return this.databaseService.comment.findUnique({
+            where
+        })
+    }
+
+    findMany(where: Prisma.CommentWhereInput){
+        return this.databaseService.comment.findMany({
+            where
+        })
+    }
+
     async delete(id: string, user: JwtPayload){
-        const comment = await this.databaseService.comment.findUnique({where: {id}});
+        const comment = await this.findOne({id})
         if (!comment){
             throw new NotFoundException()
         } 
-        if (comment.authorId !== user.id && user.role !== Role.SUPER){
-            throw new ForbiddenException()
-        }
+        validateUserPermission(user, comment.authorId)
         return this.databaseService.comment.delete({where: {id}});
     }
 
@@ -35,9 +46,7 @@ export class CommentService {
         if (!comment){
             throw new NotFoundException()
         }
-        if (user.id !== comment.authorId && user.role !== Role.SUPER){
-            throw new ForbiddenException();
-        }
+        validateUserPermission(user, comment.authorId)
 
         return this.databaseService.comment.update({
             where: {id},
@@ -45,11 +54,5 @@ export class CommentService {
                 text
             }
         })
-
-
-    }
-
-    async getById(id: string){
-        return this.databaseService.comment.findMany({where: {postId: id}});
     }
 }

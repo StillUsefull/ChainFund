@@ -51,7 +51,7 @@ export function CreateFundForm() {
             setTimeout(() => {navigate(`/profile/funds/${response.data.id}`)}, 2000)
             
         } catch (err) {
-            notifyError('Failed to create fund');
+            notifyError(err.response.data.message[0] ||'Failed to create fund');
             console.error(err);
             setLoading(false);
         }

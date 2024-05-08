@@ -17,6 +17,7 @@ export function UpdateFundForm({ fundId }) {
         category: 'TECH',
         payPalEmail: '',
         photo: '',
+        publish: false
     });
     const [loading, setLoading] = useState(false);
     const [file, setFile] = useState<File | null>(null);
@@ -123,9 +124,9 @@ export function UpdateFundForm({ fundId }) {
                         <Form.Label>File (.jpg only)</Form.Label>
                         <Form.Control type="file" onChange={handleFileChange} accept=".jpg" />
                     </Form.Group>
-                    <Button variant="primary" type="submit" disabled={loading}>
-                        {loading ? 'Updating...' : 'Update Fund'}
-                    </Button>
+                    <Button variant="primary" type="submit" disabled={loading || fundData.publish}>
+                    {loading ? 'Updating...' : 'Update Fund'}
+                </Button>
                 </Form>
             </Container>
         </>

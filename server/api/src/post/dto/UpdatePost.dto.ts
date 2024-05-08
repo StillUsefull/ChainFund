@@ -13,7 +13,6 @@ export class UpdatePostDto {
     @IsOptional()
     text?: string
 
-    @IsUrl()
     @IsOptional()
     socialLink?: string
 
