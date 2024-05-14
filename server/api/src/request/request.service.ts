@@ -3,7 +3,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateRequestDto } from './dto/CreateRequest.dto';
 import { UserService } from '@user/user.service';
 import { Role } from '@prisma/client';
-import { MailService } from 'src/mail/mail.service';
+import { MailService } from '@mail/mail.service';
 
 @Injectable()
 export class RequestService {

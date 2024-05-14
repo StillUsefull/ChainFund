@@ -53,6 +53,48 @@
       ],
       "@transaction/*": [
         "src/transaction/*"
+      ],
+      "@request/": [
+        "src/request"
+      ],
+      "@request/*": [
+        "src/request/*"
+      ],
+      "@help-request/": [
+        "src/help-request"
+      ],
+      "@help-request/*": [
+        "src/help-request/*"
+      ],
+      "@photo": [
+        "src/photo"
+      ],
+      "@photo/*": [
+        "src/photo/*"
+      ],
+      "@mail": [
+        "src/mail"
+      ],
+      "@mail/*": [
+        "src/mail/*"
+      ],
+      "@scheduler": [
+        "src/scheduler"
+      ],
+      "@scheduler/*": [
+        "src/scheduler/*"
+      ],
+      "@comment": [
+        "src/comment"
+      ],
+      "@comment/*": [
+        "src/comment/*"
+      ],
+      "@post": [
+        "src/post"
+      ],
+      "@post/*": [
+        "src/post/*"
       ]
     }
   }

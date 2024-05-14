@@ -2,7 +2,7 @@ import { DatabaseService } from '@database/database.service';
 import { ConflictException, ForbiddenException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCollectionDto } from './dto/CreateCollection.dto';
 import { JwtPayload } from '@auth/interfaces/JwtPayload';
-import { PhotoService } from 'src/photo/photo.service';
+import { PhotoService } from '@photo/photo.service';
 import { UpdateCollectionDto } from './dto/UpdateCollection.dto';
 import { Category, Comment, Prisma, Role } from '@prisma/client';
 import { validateUserPermission } from '@common/utils';

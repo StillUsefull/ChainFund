@@ -3,7 +3,7 @@ import { ConflictException, ForbiddenException, Injectable, InternalServerErrorE
 import { CreatePostDto } from './dto/CreatePost.dto';
 import { JwtPayload } from '@auth/interfaces/JwtPayload';
 import { Post, Prisma, Role } from '@prisma/client';
-import { PhotoService } from 'src/photo/photo.service';
+import { PhotoService } from '@photo/photo.service';
 import { validateUserPermission } from '@common/utils';
 
 @Injectable()

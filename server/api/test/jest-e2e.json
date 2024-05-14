@@ -11,7 +11,31 @@
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "moduleNameMapper": {
-    "@common/common/(.*)": "<rootDir>/../libs/common/src/$1",
-    "@common/common": "<rootDir>/../libs/common/src"
+    "^@database/(.*)$": "<rootDir>/../src/database/$1",
+    "^@database$": "<rootDir>/../src/database",
+    "^@user/(.*)$": "<rootDir>/../src/user/$1",
+    "^@user$": "<rootDir>/../src/user",
+    "^@auth/(.*)$": "<rootDir>/../src/auth/$1",
+    "^@auth$": "<rootDir>/../src/auth",
+    "^@common/(.*)$": "<rootDir>/../libs/common/src/$1",
+    "^@common$": "<rootDir>/../libs/common/src",
+    "^@cash-collection/(.*)$": "<rootDir>/../src/cash-collection/$1",
+    "^@cash-collection$": "<rootDir>/../src/cash-collection",
+    "^@transaction/(.*)$": "<rootDir>/../src/transaction/$1",
+    "^@transaction$": "<rootDir>/../src/transaction",
+    "^@request/(.*)$": "<rootDir>/../src/request/$1",
+    "^@request$": "<rootDir>/../src/request",
+    "^@help-request/(.*)$": "<rootDir>/../src/help-request/$1",
+    "^@help-request$": "<rootDir>/../src/help-request",
+    "^@photo/(.*)$": "<rootDir>/../src/photo/$1",
+    "^@photo$": "<rootDir>/../src/photo",
+    "^@mail/(.*)$": "<rootDir>/../src/mail/$1",
+    "^@mail$": "<rootDir>/../src/mail",
+    "^@post/(.*)$": "<rootDir>/../src/post/$1",
+    "^@post$": "<rootDir>/../src/post",
+    "^@comment/(.*)$": "<rootDir>/../src/comment/$1",
+    "^@comment$": "<rootDir>/../src/comment",
+    "^@scheduler/(.*)$": "<rootDir>/../src/scheduler/$1",
+    "^@scheduler$": "<rootDir>/../src/scheduler"
   }
 }

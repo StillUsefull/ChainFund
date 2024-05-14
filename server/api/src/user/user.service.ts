@@ -3,12 +3,11 @@ import { DatabaseService } from '@database/database.service';
 import { Prisma, Role, User } from '@prisma/client';
 import { compareSync, genSaltSync, hashSync } from 'bcrypt'
 import { JwtPayload } from '@auth/interfaces/JwtPayload';
-import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { UpdateUserDto } from './dto/UpdateUser.dto';
-import { PhotoService } from 'src/photo/photo.service';
+import { PhotoService } from '@photo/photo.service';
 import { CreateUserDto } from './dto/CreateUser.dto';
 import { updatePasswordDto } from './dto/UpdatePassword.dto';
-import { MailService } from 'src/mail/mail.service';
+import { MailService } from '@mail/mail.service';
 import { validateUserPermission } from '@common/utils';
 @Injectable()
 export class UserService {
