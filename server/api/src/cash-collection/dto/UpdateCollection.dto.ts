@@ -3,7 +3,7 @@ import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl, MaxLength }
 
 
 export class UpdateCollectionDto {
-    @MaxLength(50)
+    @MaxLength(100)
     @IsOptional()
     title: string;
 

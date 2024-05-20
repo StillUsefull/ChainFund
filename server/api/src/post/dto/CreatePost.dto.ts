@@ -4,7 +4,7 @@ export class CreatePostDto {
     @IsNotEmpty()
     @IsString()
     @IsOptional()
-    @MaxLength(20)
+    @MaxLength(100)
     title?: string
 
     @IsNotEmpty()

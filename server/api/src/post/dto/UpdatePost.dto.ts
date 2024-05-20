@@ -3,7 +3,7 @@ import { IsNotEmpty, IsOptional, IsString, IsUrl, MaxLength } from "class-valida
 export class UpdatePostDto {
     @IsNotEmpty()
     @IsString()
-    @MaxLength(20)
+    @MaxLength(100)
     @IsOptional()
     title?: string
 

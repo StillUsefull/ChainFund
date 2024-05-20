@@ -4,7 +4,7 @@ import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl, MaxLength }
 
 export class CreateCollectionDto {
     
-    @MaxLength(50)
+    @MaxLength(100)
     @IsString()
     @IsOptional()
     title: string;
