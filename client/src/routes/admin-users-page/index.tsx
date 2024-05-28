@@ -3,11 +3,10 @@ import { Button, Card, Col, Container, Form, Image, Row } from 'react-bootstrap'
 import api from '@utils/api';
 import { ToastContainer } from 'react-toastify';
 import SidebarMenu from '@components/side-bar-menu';
-import { useAuth } from '@utils/auth';
+
 
 export function AdminUsersPage() {
     const [users, setUsers] = useState([]);
-    const [user] = useAuth()
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
 
@@ -18,9 +17,8 @@ export function AdminUsersPage() {
     const fetchUsers = async () => {
         try {
             const response = await api.get(`/user/all`);
-            const currentUserId = user.id; 
-            const filteredUsers = response.data.filter(user => user.id !== currentUserId);
-            setUsers(filteredUsers);
+            
+            setUsers(response.data);
             setLoading(false);
         } catch (error) {
             console.error('Error fetching users:', error);

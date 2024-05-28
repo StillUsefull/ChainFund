@@ -30,7 +30,6 @@ export function PayButton({ fundId, receiverEmail}) {
     };
 
     const createOrder = (data, actions) => {
-        console.log('Order amount:', amount.toFixed(2));
         return actions.order.create({
             purchase_units: [{
                 amount: {

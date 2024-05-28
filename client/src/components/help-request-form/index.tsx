@@ -42,7 +42,7 @@ export function HelpRequestForm(){
         <>
             <ToastContainer />
             <Container style={{ marginTop: '20px', fontFamily: 'cursive', marginBottom: "30px" }}>
-                <h2>Create Post</h2>
+                <h2>Send request for help</h2>
                 <Form onSubmit={handleSubmit}>
                     <Form.Group className="mb-3">
                         <Form.Label>Title</Form.Label>

@@ -16,7 +16,7 @@ export class CreateRequestDto {
 
     @IsString()
     @IsNotEmpty()
-    @MaxLength(30)
+    @MaxLength(3000)
     interests: string;
 
 

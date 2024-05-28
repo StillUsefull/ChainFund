@@ -28,7 +28,7 @@ export function HelpProfilePage(){
                 <Container>
                     {requests && requests.map((request) => {
                         return <div style={{marginTop: "10px"}}>
-                            <HelpRequestCard key={request.id} card={request} admin={false}/>
+                            <HelpRequestCard key={request.id} card={request}/>
                         </div>
                     })}
                 </Container>

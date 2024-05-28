@@ -14,10 +14,7 @@ export const AuthProvider = ({ children }) => {
                     Authorization: `${localStorage.getItem('accessToken')}`
                 }
             })
-            setUser({
-                id: response.data.id,
-                role: response.data.role
-            });
+            setUser(response.data);
         } catch (error) {
             console.error('Error fetching user data:', error);
             localStorage.removeItem('accessToken');
